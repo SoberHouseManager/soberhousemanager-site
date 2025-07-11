@@ -8,10 +8,10 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: #f5f7f6;
-      color: #1a1a1a;
       margin: 0;
       padding: 0;
+      background-color: #f5f7f6;
+      color: #1a1a1a;
     }
     header, footer {
       background-color: #2c7a7b;
@@ -25,29 +25,37 @@
       font-weight: 600;
     }
     main {
-      max-width: 800px;
+      padding: 3rem 1.5rem;
+      max-width: 1000px;
       margin: auto;
-      padding: 2rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     h1 {
-      color: #2c7a7b;
+      font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: #2c7a7b;
     }
     p {
+      font-size: 1.1rem;
       line-height: 1.6;
     }
-    .hero {
-      margin-top: 2rem;
+    .hero-image {
+      margin: 2rem 0;
       width: 100%;
-      max-width: 800px;
-      display: block;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .cta {
+      background-color: #9caf88;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: bold;
       border-radius: 8px;
     }
     footer {
       text-align: center;
+      padding-top: 2rem;
     }
   </style>
 </head>
@@ -64,13 +72,16 @@
   </header>
   <main>
     <h1>Welcome to SoberHouseManager</h1>
-    <img src="https://source.unsplash.com/featured/?recovery,community" alt="Sober Living Community" class="hero" />
+    <img src="https://images.unsplash.com/photo-1588776814546-ec7bd0a1a088?auto=format&fit=crop&w=1200&q=80" alt="Sober Recovery Home" class="hero-image" />
     <p>
-      The all-in-one software solution for managing your sober living homes. Built by owners, for owners — simplify rent tracking, resident communication, applications, and more, all in one clean and affordable platform.
+      SoberHouseManager is a platform created by sober living owners for sober living owners. We understand the need for simplicity, affordability, and transparency when it comes to managing recovery homes.
     </p>
     <p>
-      Say goodbye to cash chaos. Say hello to structure.
+      Our software is designed to streamline rent collection, resident applications, and backend operations — all in one clean, professional, and easy-to-use system. No more guesswork, no more spreadsheets.
     </p>
+    <div class="cta">
+      100% Free for House Owners — Residents Cover the Fees.
+    </div>
   </main>
   <footer>
     <p>Contact: westromdrew@gmail.com</p>
