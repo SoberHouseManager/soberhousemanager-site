@@ -3,69 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sober House Manager</title>
+  <title>SoberHouseManager</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
+      background: #f5f7f6;
       color: #1a1a1a;
+      margin: 0;
+      padding: 0;
     }
-    header {
-      background: #1a1a1a;
+    header, footer {
+      background-color: #2c7a7b;
       color: white;
       padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
     nav a {
       color: white;
-      text-decoration: none;
       margin-left: 1.5rem;
+      text-decoration: none;
       font-weight: 600;
     }
-    .hero {
-      padding: 4rem 2rem;
-      text-align: center;
-      background: #fff;
+    main {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    .hero h1 {
-      font-size: 2.5rem;
+    h1 {
+      color: #2c7a7b;
       margin-bottom: 1rem;
     }
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+    p {
+      line-height: 1.6;
     }
-    .cta-button {
-      background: #1a1a1a;
-      color: white;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      margin: 0.5rem;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      padding: 4rem 2rem;
-      background: #f0f0f0;
-    }
-    .feature {
-      background: white;
-      padding: 2rem;
+    .hero {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 800px;
+      display: block;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     footer {
-      background: #1a1a1a;
-      color: white;
-      padding: 2rem;
       text-align: center;
     }
   </style>
@@ -74,36 +55,24 @@
   <header>
     <div><strong>SoberHouseManager</strong></div>
     <nav>
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="features.html">Features</a>
       <a href="apply.html">Apply</a>
       <a href="faq.html">FAQ</a>
     </nav>
   </header>
-
-  <section class="hero">
-    <h1>Simple. Smart. Free for House Managers.</h1>
-    <p>Our all-in-one platform handles rent, fees, applications, and more — all paid by residents, not owners.</p>
-    <a href="apply.html"><button class="cta-button">Apply Now</button></a>
-    <a href="features.html"><button class="cta-button">Explore Features</button></a>
-  </section>
-
-  <section class="features" id="features">
-    <div class="feature">
-      <h2>Resident Payment Portal</h2>
-      <p>Tenants can see rent due, payment history, and pay online — with built-in processing fee.</p>
-    </div>
-    <div class="feature">
-      <h2>House Manager Dashboard</h2>
-      <p>Review applications, assign statuses, and track who’s paid across all your houses.</p>
-    </div>
-    <div class="feature">
-      <h2>Application Management</h2>
-      <p>Send custom links for applicants to apply by house. Track interviews, approvals, move-ins.</p>
-    </div>
-  </section>
-
-  <footer id="contact">
+  <main>
+    <h1>Welcome to SoberHouseManager</h1>
+    <img src="https://source.unsplash.com/featured/?recovery,community" alt="Sober Living Community" class="hero" />
+    <p>
+      The all-in-one software solution for managing your sober living homes. Built by owners, for owners — simplify rent tracking, resident communication, applications, and more, all in one clean and affordable platform.
+    </p>
+    <p>
+      Say goodbye to cash chaos. Say hello to structure.
+    </p>
+  </main>
+  <footer>
     <p>Contact: westromdrew@gmail.com</p>
     <p>&copy; 2025 SoberHouseManager. All rights reserved.</p>
   </footer>
