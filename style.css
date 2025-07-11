@@ -1,0 +1,97 @@
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+  color: #2c2c2c;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  background-color: #e8f5f2;
+  padding: 20px;
+  border-bottom: 2px solid #c2dedc;
+  text-align: center;
+}
+
+header h1 {
+  color: #1a5c5a;
+  margin-bottom: 10px;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #1a5c5a;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Main */
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  font-size: 0.9em;
+  color: #666;
+  border-top: 1px solid #ccc;
+}
+
+/* Forms */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form input, form textarea, form button, form select {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+form button {
+  background-color: #2e837b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+form button:hover {
+  background-color: #256a65;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  main {
+    padding: 20px;
+  }
+}

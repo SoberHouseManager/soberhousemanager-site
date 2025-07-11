@@ -1,85 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Apply</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply - SoberHouseManager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff;
-    color: #222;
-  }
-  header, footer {
-    background-color: #2e7d7b;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-  }
-  nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .section {
-    padding: 3rem 2rem;
-    max-width: 1000px;
-    margin: auto;
-  }
-  h1, h2 {
-    color: #2e7d7b;
-  }
-  input, textarea {
-    width: 100%;
-    padding: 0.8rem;
-    margin: 0.5rem 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  button {
-    background-color: #319795;
-    color: white;
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-</style>
+    body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background: #fff; color: #1a1a1a; }
+    header, footer { background: #1a1a1a; color: white; padding: 1rem 2rem; }
+    nav a { color: white; margin-left: 1.5rem; text-decoration: none; font-weight: 600; }
+    main { padding: 3rem 2rem; max-width: 800px; margin: auto; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    ul { padding-left: 1.5rem; }
+    li { margin-bottom: 1rem; }
+  </style>
 </head>
 <body>
   <header>
-    <h1>SoberHouseManager</h1>
+    <div><strong>SoberHouseManager</strong></div>
     <nav>
       <a href="index.html">Home</a>
-      <a href="features.html">Features</a>
       <a href="about.html">About</a>
+      <a href="features.html">Features</a>
       <a href="apply.html">Apply</a>
       <a href="faq.html">FAQ</a>
-      <a href="login.html">Login</a>
     </nav>
   </header>
-  <section class="section">
-    
-<h2>Resident Application Form</h2>
-<form action="https://formspree.io/f/mwkdqkkv" method="POST">
-  <label>Full Name:</label>
-  <input type="text" name="name" required>
-  <label>Email:</label>
-  <input type="email" name="email" required>
-  <label>Phone:</label>
-  <input type="tel" name="phone">
-  <label>Move-in Date:</label>
-  <input type="date" name="movein">
-  <label>Tell us about yourself:</label>
-  <textarea name="about" rows="4"></textarea>
-  <button type="submit">Submit</button>
-</form>
 
-  </section>
+  <main>
+    <h1>Apply to a Sober Living Home</h1>
+    <div>Use the link sent to you by the house manager to apply. Each application is reviewed personally. If you don’t have a link yet, please email westromdrew@gmail.com with your location and interest.</div>
+  </main>
+
   <footer>
-    &copy; 2025 SoberHouseManager | <a href="privacy.html" style="color:white;">Privacy</a> | <a href="terms.html" style="color:white;">Terms</a>
+    <p>Contact: westromdrew@gmail.com</p>
+    <p>&copy; 2025 SoberHouseManager. All rights reserved.</p>
   </footer>
 </body>
 </html>
