@@ -1,62 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SoberHouseManager</title>
+  <title>Sober House Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      color: #222;
       margin: 0;
-      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      color: #1a1a1a;
     }
-    header, footer {
-      background-color: #2c7a7b;
+    header {
+      background: #1a1a1a;
       color: white;
-      padding: 1rem;
-      text-align: center;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     nav a {
-      margin: 0 15px;
       color: white;
       text-decoration: none;
-      font-weight: bold;
+      margin-left: 1.5rem;
+      font-weight: 600;
     }
-    main {
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: #fff;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .cta-button {
+      background: #1a1a1a;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      margin: 0.5rem;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+      background: #f0f0f0;
+    }
+    .feature {
       background: white;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    }
-    img {
-      width: 100%;
+      padding: 2rem;
       border-radius: 8px;
-      margin: 1rem 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    footer {
+      background: #1a1a1a;
+      color: white;
+      padding: 2rem;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>SoberHouseManager</h1>
+    <div><strong>SoberHouseManager</strong></div>
     <nav>
-      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="features.html">Features</a>
       <a href="apply.html">Apply</a>
       <a href="faq.html">FAQ</a>
     </nav>
   </header>
-  <main>
-    <h2>Welcome to SoberHouseManager</h2>
-    <img src="https://images.unsplash.com/photo-1588776814546-ec7bd0a1a088?auto=format&fit=crop&w=1200&q=80" alt="Sober Recovery">
-    <p>The all-in-one tool to streamline and automate your sober living house operations. Manage rent payments, residents, and applications in a clean, modern interface designed by sober house owners for sober house owners.</p>
-  </main>
-  <footer>
-    &copy; 2025 SoberHouseManager — All rights reserved
+
+  <section class="hero">
+    <h1>Simple. Smart. Free for House Managers.</h1>
+    <p>Our all-in-one platform handles rent, fees, applications, and more — all paid by residents, not owners.</p>
+    <a href="apply.html"><button class="cta-button">Apply Now</button></a>
+    <a href="features.html"><button class="cta-button">Explore Features</button></a>
+  </section>
+
+  <section class="features" id="features">
+    <div class="feature">
+      <h2>Resident Payment Portal</h2>
+      <p>Tenants can see rent due, payment history, and pay online — with built-in processing fee.</p>
+    </div>
+    <div class="feature">
+      <h2>House Manager Dashboard</h2>
+      <p>Review applications, assign statuses, and track who’s paid across all your houses.</p>
+    </div>
+    <div class="feature">
+      <h2>Application Management</h2>
+      <p>Send custom links for applicants to apply by house. Track interviews, approvals, move-ins.</p>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <p>Contact: westromdrew@gmail.com</p>
+    <p>&copy; 2025 SoberHouseManager. All rights reserved.</p>
   </footer>
 </body>
 </html>
