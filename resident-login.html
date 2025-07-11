@@ -3,30 +3,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Resident Login</title>
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      window.location.href = "resident-dashboard.html";
+    }
+  </script>
   <style>
     body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 2rem; }
     .login-container { max-width: 400px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     h2 { text-align: center; }
     label { display: block; margin-top: 1rem; }
-    input[type="text"], input[type="password"] {
-      width: 100%; padding: 0.75rem; margin-top: 0.5rem; border: 1px solid #ccc; border-radius: 5px;
-    }
-    button {
-      margin-top: 1.5rem; width: 100%; padding: 0.75rem; background-color: #50b5a0; color: white;
-      border: none; border-radius: 5px; font-size: 1rem;
-    }
+    input { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 5px; border: 1px solid #ccc; }
+    button { width: 100%; margin-top: 1.5rem; padding: 0.75rem; background: #50b5a0; color: white; border: none; border-radius: 5px; }
   </style>
 </head>
 <body>
   <div class="login-container">
     <h2>Resident / Member Login</h2>
-    <form>
-      <label for="email">Email</label>
-      <input type="text" id="email" name="email" placeholder="Enter email" />
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter password" />
+    <form onsubmit="handleLogin(event)">
+      <label>Email</label>
+      <input type="text" />
+      <label>Password</label>
+      <input type="password" />
       <button type="submit">Login</button>
     </form>
   </div>
