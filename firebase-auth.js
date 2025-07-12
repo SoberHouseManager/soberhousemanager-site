@@ -1,32 +1,74 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Firebase Compat (non-module for browser compatibility)
 const firebaseConfig = {
   apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
   authDomain: "soberhousemanager-3371d.firebaseapp.com",
   projectId: "soberhousemanager-3371d",
   storageBucket: "soberhousemanager-3371d.appspot.com",
-  messagingSenderId: "931134241567",
-  appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
-  measurementId: "G-L5SPVD901V"
+  messagingSenderId: "823636408266",
+  appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
 };
 
-// Load Firebase Compat SDK
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-function loginUser(email, password) {
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const email = userCredential.user.email;
-      if (email === "westromdrew@gmail.com") {
-        window.location.href = "admin-dashboard.html";
-      } else if (window.location.href.includes("manager")) {
-        window.location.href = "manager-dashboard.html";
-      } else {
-        window.location.href = "dashboard.html";
-      }
-    })
-    .catch((error) => {
-      alert("Login failed: " + error.message);
-    });
+// Handle login
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      const isManager = email.includes("manager");
+      window.location.href = isManager ? "manager-dashboard.html" : "resident-dashboard.html";
+    } catch (err) {
+      document.getElementById("login-message").textContent = "Login failed: " + err.message;
+    }
+  });
 }
+
+// TEST USER CREATION – Only run once
+async function setupTestAccounts() {
+  const testAccounts = [
+    { email: "test.manager@soberhouse.com", password: "Test1234!", role: "manager" },
+    { email: "test.resident@soberhouse.com", password: "Test1234!", role: "resident" }
+  ];
+
+  for (let user of testAccounts) {
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, user.email, user.password);
+      await setDoc(doc(db, "users", userCred.user.uid), {
+        email: user.email,
+        role: user.role,
+        houseId: "test-house-001"
+      });
+    } catch (err) {
+      if (!err.message.includes("already-in-use")) {
+        console.warn("Test account error:", err.message);
+      }
+    }
+  }
+
+  await setDoc(doc(db, "houses", "test-house-001"), {
+    name: "Test House",
+    managerEmail: "test.manager@soberhouse.com",
+    residents: ["test.resident@soberhouse.com"]
+  });
+}
+// Uncomment below to run test account setup once:
+// setupTestAccounts();
