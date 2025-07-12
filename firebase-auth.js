@@ -1,8 +1,5 @@
 
-// Firebase SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
+// Firebase Compat (non-module for browser compatibility)
 const firebaseConfig = {
   apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
   authDomain: "soberhousemanager-3371d.firebaseapp.com",
@@ -13,11 +10,12 @@ const firebaseConfig = {
   measurementId: "G-L5SPVD901V"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Load Firebase Compat SDK
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-window.loginUser = function(email, password) {
-  signInWithEmailAndPassword(auth, email, password)
+function loginUser(email, password) {
+  auth.signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const email = userCredential.user.email;
       if (email === "westromdrew@gmail.com") {
@@ -31,4 +29,4 @@ window.loginUser = function(email, password) {
     .catch((error) => {
       alert("Login failed: " + error.message);
     });
-};
+}
