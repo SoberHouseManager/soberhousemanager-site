@@ -1,97 +1,170 @@
 
-/* Global Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* SoberHouseManager Global Stylesheet */
+
+:root {
+  --primary: #2e7d7b;
+  --accent: #319795;
+  --bg: #f8f9fa;
+  --text: #222;
+  --light: #fff;
+  --gray: #ccc;
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Body Styling */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f9f9f9;
-  color: #2c2c2c;
+  margin: 0;
+  font-family: var(--font-main);
+  background-color: var(--bg);
+  color: var(--text);
   line-height: 1.6;
-  padding: 20px;
 }
 
-/* Header */
-header {
-  background-color: #e8f5f2;
-  padding: 20px;
-  border-bottom: 2px solid #c2dedc;
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header.site-header {
+  background: var(--primary);
+  color: var(--light);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.nav a {
+  color: var(--light);
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hero {
+  background: #e6f4f3;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-buttons .btn {
+  margin: 0.5rem;
+}
+
+.features .grid,
+.preview .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card, .preview-card {
+  background: var(--light);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   text-align: center;
 }
 
-header h1 {
-  color: #1a5c5a;
-  margin-bottom: 10px;
+.steps {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  text-align: center;
+  margin-top: 2rem;
 }
 
-nav a {
+.step {
+  flex: 1 1 30%;
+  margin: 1rem;
+}
+
+.step-number {
+  font-size: 2rem;
+  background: var(--accent);
+  color: var(--light);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 40px;
+  margin-bottom: 0.5rem;
+}
+
+.pricing table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.pricing th,
+.pricing td {
+  border: 1px solid var(--gray);
+  padding: 1rem;
+  text-align: center;
+}
+
+.testimonial blockquote {
+  font-style: italic;
+  background: #f0fdfa;
+  padding: 2rem;
+  border-left: 5px solid var(--accent);
+  text-align: center;
+  border-radius: 6px;
+}
+
+footer {
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+footer a {
+  color: #cce6e6;
   margin: 0 10px;
   text-decoration: none;
-  color: #1a5c5a;
-  font-weight: bold;
 }
 
-nav a:hover {
-  text-decoration: underline;
-}
-
-/* Main */
-main {
-  max-width: 800px;
-  margin: 20px auto;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  font-size: 0.9em;
-  color: #666;
-  border-top: 1px solid #ccc;
-}
-
-/* Forms */
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-form input, form textarea, form button, form select {
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #bbb;
-  border-radius: 5px;
-  font-size: 1em;
-}
-
-form button {
-  background-color: #2e837b;
+.btn {
+  background: var(--accent);
   color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
   border: none;
-  cursor: pointer;
+  border-radius: 5px;
   font-weight: bold;
+  display: inline-block;
 }
 
-form button:hover {
-  background-color: #256a65;
+.btn:hover {
+  background: #267976;
 }
 
-/* Responsive */
-@media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
 
-  main {
-    padding: 20px;
-  }
+.btn-outline:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-sm {
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
 }
