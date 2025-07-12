@@ -1,11 +1,11 @@
 :root {
-  --primary: #3f615c;             /* Sage/teal mix for headings */
-  --accent: #6ba29e;              /* Sage green for buttons/links */
-  --accent-dark: #4d7975;         /* Teal for hover states */
-  --light-bg: #f2f2f2;            /* Light grey background */
+  --primary: #3f615c;
+  --accent: #6ba29e;
+  --accent-dark: #4d7975;
+  --light-bg: #f2f2f2;
   --card-bg: #ffffff;
-  --text-main: #222;              /* Primary dark text */
-  --text-light: #fff;             /* White when needed */
+  --text-main: #222;
+  --text-light: #fff;
   --border: #d0d0d0;
 }
 
@@ -19,7 +19,7 @@ body {
 }
 
 h1, h2, h3, h4 {
-  color: var(--text-light);
+  color: var(--primary);
   margin-top: 0;
 }
 
@@ -29,7 +29,7 @@ a {
 }
 
 header, footer {
-  background-color: var(--accent);
+  background-color: var(--primary);
   color: var(--text-light);
   padding: 1.2rem;
   text-align: center;
@@ -52,7 +52,7 @@ nav a {
 }
 
 .hero {
-  background: var(--accent);
+  background: #e9f4f3;
   padding: 4rem 2rem;
   text-align: center;
 }
@@ -60,12 +60,12 @@ nav a {
 .hero h1 {
   font-size: 2.8rem;
   margin-bottom: 0.5rem;
-  color: var(--text-light);
+  color: var(--primary);
 }
 
 .hero p {
   font-size: 1.2rem;
-  color: var(--text-light);
+  color: var(--primary);
 }
 
 button, input[type=submit] {
