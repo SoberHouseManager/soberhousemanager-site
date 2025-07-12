@@ -33,5 +33,21 @@
 </div>
 <script src="firebase-auth.js"></script>
 <script>protectDashboard();</script>
+
+
+<section class="section" style="text-align:center;">
+  <button id="show-dashboard" style="margin: 0 10px; padding:10px 20px;">🏠 Dashboard</button>
+  <button id="show-docs" style="margin: 0 10px; padding:10px 20px;">📄 Documents & Rules</button>
+</section>
+
+<section class="section">
+  <div id="resident-dashboard" style="max-width:800px;margin:auto;"></div>
+</section>
+<script src="resident-dashboard-tools.js"></script>
+
+
+<section class="section" id="docs-tab" style="max-width:800px;margin:auto;display:none;"></section>
+
+<script src="resident-docs.js"></script>
 </body>
 </html>

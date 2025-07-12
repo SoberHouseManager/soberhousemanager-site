@@ -1,3 +1,9 @@
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const houseId = urlParams.get("houseId");
+</script>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -94,5 +100,12 @@
 <footer>
     © 2025 SoberHouseManager | <a href="mailto:support@soberhousemanager.com" style="color:white;">Contact Support</a>
 </footer>
+
+<script src="firestore-apply.js"></script>
+<script>
+  document.querySelector("form").addEventListener("submit", submitApplication);
+</script>
+<p id="submit-msg" style="text-align:center;margin-top:1rem;"></p>
+
 </body>
 </html>
