@@ -1,35 +1,64 @@
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Resident Login</title>
-<script>
+  <meta charset="UTF-8" />
+  <title>Resident Login</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.firebasestorage.app",
+      messagingSenderId: "931134241567",
+      appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
+      measurementId: "G-L5SPVD901V"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
     function handleLogin(event) {
       event.preventDefault();
-      window.location.href = "resident-dashboard.html";
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "resident-dashboard.html";
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
     }
   </script>
-<style>
-    body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 2rem; }
-    .login-container { max-width: 400px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; }
-    label { display: block; margin-top: 1rem; }
-    input { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 5px; border: 1px solid #ccc; }
-    button { width: 100%; margin-top: 1.5rem; padding: 0.75rem; background: #50b5a0; color: white; border: none; border-radius: 5px; }
-  </style>
-<link href="style.css" rel="stylesheet"/></head>
+</head>
 <body>
-<div class="login-container">
-<h2>Resident / Member Login</h2>
-<form onsubmit="handleLogin(event)">
-<label>Email</label>
-<input type="text"/>
-<label>Password</label>
-<input type="password"/>
-<button type="submit">Login</button>
-</form>
-</div>
+  <header>
+    <h1>SoberHouseManager</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="about.html">About</a>
+      <a href="apply.html">Apply</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </header>
+  <section class="section">
+    <h2>Resident / Member Login</h2>
+    <form onsubmit="handleLogin(event)">
+      <label>Email</label>
+      <input id="email" type="email" required />
+      <label>Password</label>
+      <input id="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </section>
+  <footer>
+    &copy; 2025 SoberHouseManager | <a href="privacy.html" style="color:white;">Privacy</a> | <a href="terms.html" style="color:white;">Terms</a>
+  </footer>
 </body>
 </html>
