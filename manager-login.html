@@ -65,5 +65,17 @@
 <footer>
     © 2025 SoberHouseManager | <a href="privacy.html" style="color:white;">Privacy</a> | <a href="terms.html" style="color:white;">Terms</a>
 </footer>
+
+<div style="max-width:400px;margin:auto;padding-top:100px;">
+  <h2 style="text-align:center;">Manager Login</h2>
+  <input id="email" type="email" placeholder="Email" style="width:100%;padding:0.5rem;margin-bottom:1rem;">
+  <input id="password" type="password" placeholder="Password" style="width:100%;padding:0.5rem;margin-bottom:1rem;">
+  <div style="text-align:center;">
+    <button onclick="loginUser(email.value, password.value)">Login</button>
+    <button onclick="signUpUser(email.value, password.value)">Sign Up</button>
+  </div>
+</div>
+<script src="firebase-auth.js"></script>
+
 </body>
 </html>
