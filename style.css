@@ -112,3 +112,82 @@ footer {
   margin-top: 3rem;
   font-size: 0.9rem;
 }
+
+/* Header Branding */
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+nav a {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+/* Hero Section */
+.hero {
+  background: #e6f3f2;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1f1f1f;
+}
+.hero p {
+  font-size: 1.1rem;
+  color: #1f1f1f;
+  background-color: transparent;
+  margin: 1rem auto 2rem;
+  max-width: 700px;
+}
+
+/* Button Styling */
+button, .btn {
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  margin: 0.25rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:hover, .btn:hover {
+  background-color: var(--accent-dark);
+}
+
+/* Feature Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.grid .card {
+  background: #fff;
+  padding: 2rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+  text-align: center;
+}
+.grid .card h3 {
+  margin-top: 1rem;
+  color: var(--primary);
+}
+.grid .card p {
+  color: var(--text-main);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
