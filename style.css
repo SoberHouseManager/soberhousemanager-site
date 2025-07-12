@@ -19,7 +19,7 @@ body {
 }
 
 h1, h2, h3, h4 {
-  color: var(--primary);
+  color: var(--text-light);
   margin-top: 0;
 }
 
@@ -29,7 +29,7 @@ a {
 }
 
 header, footer {
-  background-color: var(--primary);
+  background-color: var(--accent);
   color: var(--text-light);
   padding: 1.2rem;
   text-align: center;
@@ -52,7 +52,7 @@ nav a {
 }
 
 .hero {
-  background: #e9f4f3;
+  background: var(--accent);
   padding: 4rem 2rem;
   text-align: center;
 }
@@ -60,12 +60,12 @@ nav a {
 .hero h1 {
   font-size: 2.8rem;
   margin-bottom: 0.5rem;
-  color: var(--primary);
+  color: var(--text-light);
 }
 
 .hero p {
   font-size: 1.2rem;
-  color: var(--primary);
+  color: var(--text-light);
 }
 
 button, input[type=submit] {
