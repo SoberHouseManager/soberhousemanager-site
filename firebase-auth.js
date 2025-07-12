@@ -1,5 +1,4 @@
 
-<!-- Firebase App (the core Firebase SDK) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
@@ -14,13 +13,11 @@
     measurementId: "G-L5SPVD901V"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // Login function
-  function loginUser(emailId, password) {
-    firebase.auth().signInWithEmailAndPassword(emailId, password)
+  function loginUser(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         const email = user.email;
@@ -34,9 +31,7 @@
         }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert("Login failed: " + errorMessage);
+        alert("Login failed: " + error.message);
       });
   }
 </script>

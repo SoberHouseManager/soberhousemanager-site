@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Resident Login</title>
+  <title>LOGIN</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="firebase-auth.js"></script>
+  <script src="firebase-auth.js" defer></script>
 </head>
 <body>
   <header>
@@ -13,7 +13,7 @@
   </header>
 
   <section class="section">
-    <form onsubmit="event.preventDefault(); loginUser(document.getElementById('email').value, document.getElementById('password').value);">
+    <form onsubmit="event.preventDefault(); loginUser(email.value, password.value);">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" required />
@@ -22,7 +22,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" required />
       </div>
-      <button class="btn" type="submit">Login</button>
+      <button type="submit" class="btn">Login</button>
     </form>
   </section>
 
