@@ -1,15 +1,17 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<title>Resident Login</title>
-<link href="style.css" rel="stylesheet"/>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-<script>
-    const firebaseConfig = {
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Resident Login
+  </title>
+  <link href="style.css" rel="stylesheet"/>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js">
+  </script>
+  <script>
+   const firebaseConfig = {
       apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
       authDomain: "soberhousemanager-3371d.firebaseapp.com",
       projectId: "soberhousemanager-3371d",
@@ -36,46 +38,80 @@
         });
     }
   </script>
-</head>
-<body>
-<header>
-<h1>SoberHouseManager</h1>
-
-<nav>
-<a href="index.html">Home</a>
-<a href="features.html">Features</a>
-<a href="about.html">About</a>
-<a href="apply.html">Apply</a>
-<a href="faq.html">FAQ</a>
-<a href="resident-login.html">Resident Login</a>
-<a href="manager-login.html">Manager Login</a>
-</nav>
-
-</header>
-<section class="section">
-<h2>Resident / Member Login</h2>
-<form onsubmit="handleLogin(event)">
-<label>Email</label>
-<input id="email" required="" type="email"/>
-<label>Password</label>
-<input id="password" required="" type="password"/>
-<button type="submit">Login</button>
-</form>
-</section>
-<footer>
-    © 2025 SoberHouseManager | <a href="privacy.html" style="color:white;">Privacy</a> | <a href="terms.html" style="color:white;">Terms</a>
-</footer>
-
-<div style="max-width:400px;margin:auto;padding-top:100px;">
-  <h2 style="text-align:center;">Resident Login</h2>
-  <input id="email" type="email" placeholder="Email" style="width:100%;padding:0.5rem;margin-bottom:1rem;">
-  <input id="password" type="password" placeholder="Password" style="width:100%;padding:0.5rem;margin-bottom:1rem;">
-  <div style="text-align:center;">
-    <button onclick="loginUser(email.value, password.value)">Login</button>
-    <button onclick="signUpUser(email.value, password.value)">Sign Up</button>
+ </head>
+ <body>
+  <header>
+   <h1>
+    SoberHouseManager
+   </h1>
+   <nav>
+    <a href="index.html">
+     Home
+    </a>
+    <a href="features.html">
+     Features
+    </a>
+    <a href="about.html">
+     About
+    </a>
+    <a href="apply.html">
+     Apply
+    </a>
+    <a href="faq.html">
+     FAQ
+    </a>
+    <a href="resident-login.html">
+     Resident Login
+    </a>
+    <a href="manager-login.html">
+     Manager Login
+    </a>
+   </nav>
+  </header>
+  <section class="section">
+   <h2>
+    Resident / Member Login
+   </h2>
+   <form onsubmit="handleLogin(event)">
+    <label>
+     Email
+    </label>
+    <input id="email" required="" type="email"/>
+    <label>
+     Password
+    </label>
+    <input id="password" required="" type="password"/>
+    <button type="submit">
+     Login
+    </button>
+   </form>
+  </section>
+  <footer>
+   © 2025 SoberHouseManager |
+   <a href="privacy.html" style="color:white;">
+    Privacy
+   </a>
+   |
+   <a href="terms.html" style="color:white;">
+    Terms
+   </a>
+  </footer>
+  <div style="max-width:400px;margin:auto;padding-top:100px;">
+   <h2 style="text-align:center;">
+    Resident Login
+   </h2>
+   <input id="email" placeholder="Email" style="width:100%;padding:0.5rem;margin-bottom:1rem;" type="email"/>
+   <input id="password" placeholder="Password" style="width:100%;padding:0.5rem;margin-bottom:1rem;" type="password"/>
+   <div style="text-align:center;">
+    <button onclick="loginUser(email.value, password.value)">
+     Login
+    </button>
+    <button onclick="signUpUser(email.value, password.value)">
+     Sign Up
+    </button>
+   </div>
   </div>
-</div>
-<script src="firebase-auth.js"></script>
-
-</body>
+  <script src="firebase-auth.js">
+  </script>
+ </body>
 </html>
