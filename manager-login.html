@@ -1,117 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="en">
- <head>
+<head>
   <meta charset="utf-8"/>
-  <title>
-   Resident Login
-  </title>
-  <link href="style.css" rel="stylesheet"/>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js">
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js">
-  </script>
-  <script>
-   const firebaseConfig = {
-      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
-      authDomain: "soberhousemanager-3371d.firebaseapp.com",
-      projectId: "soberhousemanager-3371d",
-      storageBucket: "soberhousemanager-3371d.firebasestorage.app",
-      messagingSenderId: "931134241567",
-      appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
-      measurementId: "G-L5SPVD901V"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "manager-dashboard.html";
-        })
-        .catch((error) => {
-          alert("Login failed: " + error.message);
-        });
-    }
-  </script>
- </head>
- <body>
+  <title>Manager / Owner Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="firebase-auth.js"></script>
+</head>
+<body>
   <header>
-   <h1>
-    SoberHouseManager
-   </h1>
-   <nav>
-    <a href="index.html">
-     Home
-    </a>
-    <a href="features.html">
-     Features
-    </a>
-    <a href="about.html">
-     About
-    </a>
-    <a href="apply.html">
-     Apply
-    </a>
-    <a href="faq.html">
-     FAQ
-    </a>
-    <a href="resident-login.html">
-     Resident Login
-    </a>
-    <a href="manager-login.html">
-     Manager Login
-    </a>
-   </nav>
+    <h1>Manager / Owner Login</h1>
   </header>
+
   <section class="section">
-   <h2>
-    Manager / Owner Login
-   </h2>
-   <form onsubmit="handleLogin(event)">
-    <label>
-     Email
-    </label>
-    <input id="email" required="" type="email"/>
-    <label>
-     Password
-    </label>
-    <input id="password" required="" type="password"/>
-    <button type="submit">
-     Login
-    </button>
-   </form>
+    <form onsubmit="event.preventDefault(); loginUser(document.getElementById('email').value, document.getElementById('password').value);">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+      </div>
+      <button class="btn" type="submit">Login</button>
+    </form>
   </section>
+
   <footer>
-   © 2025 SoberHouseManager |
-   <a href="privacy.html" style="color:white;">
-    Privacy
-   </a>
-   |
-   <a href="terms.html" style="color:white;">
-    Terms
-   </a>
+    <p>&copy; 2025 SoberHouseManager | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
   </footer>
-  <div style="max-width:400px;margin:auto;padding-top:100px;">
-   <h2 style="text-align:center;">
-    Manager Login
-   </h2>
-   <input id="email" placeholder="Email" style="width:100%;padding:0.5rem;margin-bottom:1rem;" type="email"/>
-   <input id="password" placeholder="Password" style="width:100%;padding:0.5rem;margin-bottom:1rem;" type="password"/>
-   <div style="text-align:center;">
-    <button onclick="loginUser(email.value, password.value)">
-     Login
-    </button>
-    <button onclick="signUpUser(email.value, password.value)">
-     Sign Up
-    </button>
-   </div>
-  </div>
-  <script src="firebase-auth.js">
-  </script>
- </body>
+</body>
 </html>
