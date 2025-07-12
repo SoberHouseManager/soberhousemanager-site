@@ -1,3 +1,4 @@
+
 <!-- Firebase App (the core Firebase SDK) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -22,46 +23,20 @@
     firebase.auth().signInWithEmailAndPassword(emailId, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        if (window.location.href.includes("manager")) {
+        const email = user.email;
+
+        if (email === "westromdrew@gmail.com") {
+          window.location.href = "admin-dashboard.html";
+        } else if (window.location.href.includes("manager")) {
           window.location.href = "manager-dashboard.html";
         } else {
-          window.location.href = "resident-dashboard.html";
+          window.location.href = "dashboard.html";
         }
       })
       .catch((error) => {
-        alert("Login Failed: " + error.message);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert("Login failed: " + errorMessage);
       });
-  }
-
-  // Sign-up function
-  function signUpUser(emailId, password) {
-    firebase.auth().createUserWithEmailAndPassword(emailId, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (window.location.href.includes("manager")) {
-          window.location.href = "manager-dashboard.html";
-        } else {
-          window.location.href = "resident-dashboard.html";
-        }
-      })
-      .catch((error) => {
-        alert("Sign-up Failed: " + error.message);
-      });
-  }
-
-  // Logout function
-  function logoutUser() {
-    firebase.auth().signOut().then(() => {
-      window.location.href = "index.html";
-    });
-  }
-
-  // Protect dashboard access
-  function protectDashboard() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = "login.html";
-      }
-    });
   }
 </script>
