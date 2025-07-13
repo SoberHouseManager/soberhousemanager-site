@@ -67,8 +67,10 @@ async function handlePayment() {
   });
 
   const session = await response.json();
+  console.log("Stripe session response:", session);
+
   if (session.id) {
-    const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX"); // Replace with your actual publishable key
+    const stripe = Stripe("pk_live_51RkDjSG78wJabJVZogczWNVRELrErrtN0psCKmeDDELABmdjw0zqSStbMXw0RhjB9BOPm9FTiW1B10KPLhbyJ85e00K40phPTP");
     stripe.redirectToCheckout({ sessionId: session.id });
   } else {
     messageEl.textContent = "⚠️ Error creating checkout session.";
