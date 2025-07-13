@@ -1,31 +1,22 @@
-// resident-payments.js
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  collection,
-  addDoc,
-  Timestamp
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+  apiKey: "pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U",
   authDomain: "soberhousemanager-3371d.firebaseapp.com",
   projectId: "soberhousemanager-3371d",
   storageBucket: "soberhousemanager-3371d.appspot.com",
-  messagingSenderId: "823636408266",
-  appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+  messagingSenderId: "931134241567",
+  appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
+  measurementId: "G-L5SPVD901V"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const stripe = Stripe("pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U");
 
 const rentAmountEl = document.getElementById("rentAmount");
 const frequencyEl = document.getElementById("frequency");
@@ -33,52 +24,53 @@ const nextDueEl = document.getElementById("nextDue");
 const balanceEl = document.getElementById("balance");
 const messageEl = document.getElementById("payment-message");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return (window.location.href = "resident-login.html");
+async function fetchResidentData(user) {
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
 
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  if (!userDoc.exists()) return;
-  const userData = userDoc.data();
-
-  rentAmountEl.textContent = `$${userData.rent || 0}`;
-  frequencyEl.textContent = userData.frequency || "Monthly";
-  nextDueEl.textContent = userData.nextDue || "TBD";
-  balanceEl.textContent = `$${userData.balance || 0}`;
-});
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    rentAmountEl.textContent = `$${data.rent || 0}`;
+    frequencyEl.textContent = data.frequency || "N/A";
+    nextDueEl.textContent = data.nextDue || "N/A";
+    balanceEl.textContent = `$${data.balance || 0}`;
+  } else {
+    messageEl.textContent = "❌ No resident data found.";
+  }
+}
 
 async function handlePayment() {
-  messageEl.textContent = "Redirecting to Stripe...";
-
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) return alert("You must be logged in.");
 
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  const userData = userDoc.data();
-  const rentAmount = userData.rent || 0;
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+  const data = docSnap.data();
 
   const response = await fetch("https://us-central1-soberhousemanager-3371d.cloudfunctions.net/createCheckoutSession", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      uid: user.uid,
-      amount: rentAmount * 100,
-      method: "card"
-    }),
+      email: user.email,
+      amount: data.rent,
+      userId: user.uid
+    })
   });
 
   const session = await response.json();
-  console.log("Stripe session response:", session);
-
   if (session.id) {
-    const stripe = Stripe("pk_live_51RkDjSG78wJabJVZogczWNVRELrErrtN0psCKmeDDELABmdjw0zqSStbMXw0RhjB9BOPm9FTiW1B10KPLhbyJ85e00K40phPTP");
+    messageEl.textContent = "Redirecting to Stripe...";
     stripe.redirectToCheckout({ sessionId: session.id });
   } else {
-    messageEl.textContent = "⚠️ Error creating checkout session.";
-    console.error("Stripe error:", session);
+    messageEl.textContent = "❌ Failed to create Stripe session.";
   }
 }
 
 document.getElementById("payNowBtn")?.addEventListener("click", handlePayment);
 document.getElementById("enableAutoBtn")?.addEventListener("click", () => {
   messageEl.textContent = "🔁 Auto-debit setup coming soon...";
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) fetchResidentData(user);
 });
