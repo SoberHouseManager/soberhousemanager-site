@@ -5,58 +5,29 @@
   <title>Resident Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-  <header>
-    <h1>SoberHouseManager</h1>
-    <nav>
-      <a href="resident-dashboard.html">Dashboard</a>
-      <a href="index.html">Home</a>
-      <a href="#" id="logoutBtn">Logout</a>
-    </nav>
-  </header>
-
-  <main>
-    <section>
-      <p><strong>Rent Amount:</strong> <span id="rentAmount">$0</span></p>
-      <p><strong>Payment Frequency:</strong> <span id="frequency">Monthly</span></p>
-      <p><strong>Next Due:</strong> <span id="nextDue">N/A</span></p>
-      <p><strong>Current Balance:</strong> <span id="balance">$0</span></p>
-    </section>
-
-    <section style="margin-top: 20px;">
-      <button id="payNowBtn">Pay Now</button>
-      <button id="enableAutoBtn">Enable Auto-Debit</button>
-      <p id="payment-message"></p>
-    </section>
-
-    <section style="margin-top: 40px;">
-      <button onclick="setupTestResident()">Create Test Resident (For Debug)</button>
-    </section>
-  </main>
-
-  <!-- Stripe and main resident logic -->
-  <script type="module" src="resident-payments.js"></script>
-
-  <!-- Firebase Test Resident Setup -->
   <script type="module">
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
+    // Firebase config (yours)
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.firebasestorage.app",
+      messagingSenderId: "931134241567",
+      appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
+      measurementId: "G-L5SPVD901V"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Make setupTestResident globally available
     window.setupTestResident = function () {
       onAuthStateChanged(auth, async (user) => {
         if (!user) {
@@ -80,5 +51,33 @@
       });
     };
   </script>
+</head>
+<body>
+  <header>
+    <h1>SoberHouseManager</h1>
+    <nav>
+      <a href="resident-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <p><strong>Rent Amount:</strong> <span id="rentAmount">$0</span></p>
+      <p><strong>Payment Frequency:</strong> <span id="frequency">Monthly</span></p>
+      <p><strong>Next Due:</strong> <span id="nextDue">N/A</span></p>
+      <p><strong>Current Balance:</strong> <span id="balance">$0</span></p>
+    </section>
+
+    <section style="margin-top: 20px;">
+      <button id="payNowBtn">Pay Now</button>
+      <button id="enableAutoBtn">Enable Auto-Debit</button>
+      <button onclick="setupTestResident()">Create Test Resident</button>
+      <p id="payment-message"></p>
+    </section>
+  </main>
+
+  <script type="module" src="resident-payments.js"></script>
 </body>
 </html>
