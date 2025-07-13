@@ -1,76 +1,87 @@
-import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U",
-  authDomain: "soberhousemanager-3371d.firebaseapp.com",
-  projectId: "soberhousemanager-3371d",
-  storageBucket: "soberhousemanager-3371d.appspot.com",
-  messagingSenderId: "931134241567",
-  appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
-  measurementId: "G-L5SPVD901V"
-};
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { app } from './firebase-auth.js';
 
-// ✅ Fix: Prevent Firebase from being initialized multiple times
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const stripe = Stripe("pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U");
 
-const rentAmountEl = document.getElementById("rentAmount");
-const frequencyEl = document.getElementById("frequency");
-const nextDueEl = document.getElementById("nextDue");
-const balanceEl = document.getElementById("balance");
-const messageEl = document.getElementById("payment-message");
+const paymentSection = document.getElementById("payment-section");
+const paymentHistory = document.getElementById("payment-history");
+const currentBalance = document.getElementById("current-balance");
+const payNowButton = document.getElementById("pay-now");
 
-async function fetchResidentData(user) {
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    rentAmountEl.textContent = `$${data.rent || 0}`;
-    frequencyEl.textContent = data.frequency || "N/A";
-    nextDueEl.textContent = data.nextDue || "N/A";
-    balanceEl.textContent = `$${data.balance || 0}`;
-  } else {
-    messageEl.textContent = "❌ No resident data found.";
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "resident-login.html";
+    return;
   }
-}
 
-async function handlePayment() {
-  const user = auth.currentUser;
-  if (!user) return alert("You must be logged in.");
+  const uid = user.uid;
+  const userDocRef = doc(db, "residents", uid);
+  const userDocSnap = await getDoc(userDocRef);
 
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
-  const data = docSnap.data();
+  if (!userDocSnap.exists()) {
+    alert("Resident profile not found.");
+    return;
+  }
 
-  const response = await fetch("https://us-central1-soberhousemanager-3371d.cloudfunctions.net/createCheckoutSession", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: user.email,
-      amount: data.rent,
-      userId: user.uid
-    })
+  const userData = userDocSnap.data();
+  const dueAmount = userData.currentDue || 0;
+  currentBalance.textContent = `$${(dueAmount / 100).toFixed(2)}`;
+
+  // Load payment history
+  const historyRef = collection(db, "residents", uid, "payments");
+  const historySnap = await getDocs(historyRef);
+  paymentHistory.innerHTML = "";
+
+  historySnap.forEach(doc => {
+    const data = doc.data();
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${new Date(data.timestamp?.toDate()).toLocaleDateString()}</td>
+      <td>$${(data.amount / 100).toFixed(2)}</td>
+      <td>${data.method}</td>
+      <td>${data.status}</td>
+    `;
+    paymentHistory.appendChild(row);
   });
 
-  const session = await response.json();
-  if (session.id) {
-    messageEl.textContent = "Redirecting to Stripe...";
-    stripe.redirectToCheckout({ sessionId: session.id });
-  } else {
-    messageEl.textContent = "❌ Failed to create Stripe session.";
-  }
-}
+  payNowButton.addEventListener("click", async () => {
+    const response = await fetch("https://us-central1-soberhousemanager.cloudfunctions.net/api/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: dueAmount })
+    });
 
-document.getElementById("payNowBtn")?.addEventListener("click", handlePayment);
-document.getElementById("enableAutoBtn")?.addEventListener("click", () => {
-  messageEl.textContent = "🔁 Auto-debit setup coming soon...";
-});
+    const { clientSecret } = await response.json();
 
-onAuthStateChanged(auth, (user) => {
-  if (user) fetchResidentData(user);
+    const stripe = Stripe("pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U");
+
+    const elements = stripe.elements();
+    const paymentElement = elements.create("payment");
+    paymentElement.mount("#payment-element");
+
+    document.getElementById("payment-form").style.display = "block";
+
+    document.getElementById("submit-payment").onclick = async () => {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: { return_url: window.location.href },
+        redirect: "if_required"
+      });
+
+      if (error) {
+        alert(error.message);
+      } else {
+        await addDoc(historyRef, {
+          timestamp: new Date(),
+          amount: dueAmount,
+          method: "Stripe",
+          status: paymentIntent.status
+        });
+        location.reload();
+      }
+    };
+  });
 });
