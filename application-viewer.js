@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getFirestore,
@@ -22,21 +23,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Dummy manager email for test; replace this with actual logged-in user logic
 const currentManagerEmail = "test.manager@soberhouse.com";
 
-// Load applications for houses managed by the current manager
 async function loadApplications() {
+  console.log("🔍 Getting houses for manager:", currentManagerEmail);
   const housesSnap = await getDocs(query(collection(db, "houses"), where("managerEmail", "==", currentManagerEmail)));
   const houseIds = housesSnap.docs.map(doc => doc.id);
+  console.log("🏠 House IDs managed:", houseIds);
 
   const appSnap = await getDocs(collection(db, "applications"));
+  console.log("📋 Total applications retrieved:", appSnap.size);
+
   const container = document.getElementById("application-list");
   container.innerHTML = "";
 
   appSnap.forEach(docSnap => {
     const app = docSnap.data();
-    if (!houseIds.includes(app.houseId) || app.status !== "pending") return;
+    console.log("➡️ Checking application:", app);
+    if (!houseIds.includes(app.houseId)) {
+      console.log("❌ Skipped (wrong house):", app.houseId);
+      return;
+    }
+    if (app.status.toLowerCase() !== "pending") {
+      console.log("❌ Skipped (not pending):", app.status);
+      return;
+    }
 
     const div = document.createElement("div");
     div.className = "application-card";
@@ -44,7 +55,7 @@ async function loadApplications() {
       <h3>${app.fullName}</h3>
       <p>Email: ${app.email}</p>
       <p>Phone: ${app.phone}</p>
-      <p>Reason: ${app.whyJoin}</p>
+      <p>Reason: ${app.whyJoin || "N/A"}</p>
       <p>House ID: ${app.houseId}</p>
       <button onclick="openApprovalForm('${docSnap.id}', '${app.email}', '${app.houseId}')">Approve</button>
       <button onclick="rejectApplication('${docSnap.id}')">Reject</button>
