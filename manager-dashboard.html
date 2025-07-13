@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manager Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
   <header>
     <h1>Manager Dashboard</h1>
@@ -5,11 +12,13 @@
   </header>
 
   <main>
+    <!-- Pending Applications -->
     <section>
       <h2>Pending Applications</h2>
       <div id="application-list"></div>
     </section>
 
+    <!-- Approval Form -->
     <section>
       <form id="approval-form" style="display:none; margin-top: 20px;">
         <h3>Approve Applicant</h3>
@@ -25,9 +34,14 @@
         <button type="submit">Confirm Approval</button>
       </form>
     </section>
+
+    <!-- Resident List -->
+    <section id="resident-list" style="margin-top: 40px;">
+      <!-- Populated dynamically if manager -->
+    </section>
   </main>
 
   <script type="module" src="application-viewer.js"></script>
   <script type="module" src="dashboard-auth.js"></script>
 </body>
-
+</html>
