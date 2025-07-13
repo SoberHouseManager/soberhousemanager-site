@@ -8,13 +8,13 @@
 </head>
 <body>
   <header>
-  <h1>SoberHouseManager</h1>
-  <nav>
-    <a href="resident-dashboard.html">Dashboard</a>
-    <a href="index.html">Home</a>
-    <a href="#" id="logoutBtn">Logout</a>
-  </nav>
-</header>
+    <h1>SoberHouseManager</h1>
+    <nav>
+      <a href="resident-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
 
   <main>
     <section>
@@ -29,8 +29,56 @@
       <button id="enableAutoBtn">Enable Auto-Debit</button>
       <p id="payment-message"></p>
     </section>
+
+    <section style="margin-top: 40px;">
+      <button onclick="setupTestResident()">Create Test Resident (For Debug)</button>
+    </section>
   </main>
 
+  <!-- Stripe and main resident logic -->
   <script type="module" src="resident-payments.js"></script>
+
+  <!-- Firebase Test Resident Setup -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.setupTestResident = function () {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          alert("❌ You must be logged in as a test resident.");
+          return;
+        }
+
+        const userRef = doc(db, "users", user.uid);
+
+        await setDoc(userRef, {
+          email: user.email,
+          role: "resident",
+          rent: 500,
+          balance: 500,
+          houseId: "test-house-001",
+          frequency: "monthly",
+          nextDue: "08/01/2025"
+        });
+
+        alert("✅ Test resident document created.");
+      });
+    };
+  </script>
 </body>
 </html>
