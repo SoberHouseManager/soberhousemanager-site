@@ -1,5 +1,4 @@
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -13,7 +12,8 @@ const firebaseConfig = {
   measurementId: "G-L5SPVD901V"
 };
 
-const app = initializeApp(firebaseConfig);
+// ✅ Fix: Prevent Firebase from being initialized multiple times
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const stripe = Stripe("pk_test_51RkDjSG78wJabJVZgG5LQnWDb1d7ziPeymKeaWRsWz9p4QM2zXdMgkNQYjLBWmNnTdxONFlIDpSen7v3N5DzUWVV00BZRM4R4U");
