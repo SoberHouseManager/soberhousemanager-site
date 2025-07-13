@@ -1,50 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <title>
-   Manager Dashboard
-  </title>
-  <style>
-   body { font-family: Arial, sans-serif; background: #f4f6f8; padding: 2rem; }
-    header { text-align: center; margin-bottom: 2rem; }
-    .dashboard { max-width: 900px; margin: auto; background: white; padding: 2rem; border-radius: 10px; }
-    h2 { color: #333; }
-    .section { margin-bottom: 2rem; }
-  </style>
-  <link href="style.css" rel="stylesheet"/>
- </head>
- <body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Manager Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
   <header>
-   <h1>
-    Manager / Owner Dashboard
-   </h1>
+    <h1>Manager Dashboard</h1>
   </header>
-  <div class="dashboard">
-   <div class="section">
-    <h2>
-     Properties Overview
-    </h2>
-    <p>
-     You currently manage 3 houses. Total residents: 24
-    </p>
-   </div>
-   <div class="section">
-    <h2>
-     Payment Activity
-    </h2>
-    <p>
-     Latest payment received: $650 - John D. (House A)
-    </p>
-   </div>
-   <div class="section">
-    <h2>
-     Applications
-    </h2>
-    <p>
-     3 new applications awaiting review
-    </p>
-   </div>
-  </div>
- </body>
+
+  <main>
+    <section>
+      <h2>Pending Applications</h2>
+      <div id="application-list"></div>
+    </section>
+
+    <section>
+      <form id="approval-form" style="display:none; margin-top: 20px;">
+        <h3>Approve Applicant</h3>
+        <label>Rent Amount ($): <input type="number" id="rent" required></label><br><br>
+        <label>Deposit / Move-in Fee ($): <input type="number" id="deposit" required></label><br><br>
+        <label>Payment Frequency:
+          <select id="frequency">
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </label><br><br>
+        <label><input type="checkbox" id="recurring"> Enable Recurring Payments</label><br><br>
+        <button type="submit">Confirm Approval</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="application-viewer.js"></script>
+</body>
 </html>
