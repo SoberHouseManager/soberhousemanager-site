@@ -1,142 +1,27 @@
-<script>
- const urlParams = new URLSearchParams(window.location.search);
-  const houseId = urlParams.get("houseId");
-</script>
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <title>
-   Apply - SoberHouseManager
-  </title>
-  <style>
-   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #fdfdfd;
-    color: #222;
-  }
-  header, footer {
-    background-color: #2e7d7b;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-  }
-  nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .section {
-    padding: 3rem 2rem;
-    max-width: 1000px;
-    margin: auto;
-  }
-  h1, h2 {
-    text-align: center;
-    color: #2e7d7b;
-  }
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  input, textarea {
-    width: 100%;
-    padding: 0.8rem;
-    margin-top: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  button {
-    background-color: #319795;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  </style>
-  <link href="style.css" rel="stylesheet"/>
- </head>
- <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SoberHouseManager - Apply</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
   <header>
-   <h1>
-    SoberHouseManager
-   </h1>
-   <nav>
-    <a href="index.html">
-     Home
-    </a>
-    <a href="features.html">
-     Features
-    </a>
-    <a href="about.html">
-     About
-    </a>
-    <a href="apply.html">
-     Apply
-    </a>
-    <a href="faq.html">
-     FAQ
-    </a>
-   </nav>
+    <h1>Resident Application</h1>
   </header>
-  <section class="section">
-   <h2>
-    Resident Application Form
-   </h2>
-   <form id="application-form">
-    <div class="form-group">
-     <label for="name">
-      Full Name:
-     </label>
-     <input id="name" required="" type="text"/>
-    </div>
-    <div class="form-group">
-     <label for="email">
-      Email Address:
-     </label>
-     <input id="email" required="" type="email"/>
-    </div>
-    <div class="form-group">
-     <label for="phone">
-      Phone Number:
-     </label>
-     <input id="phone" type="tel"/>
-    </div>
-    <div class="form-group">
-     <label for="movein">
-      Preferred Move-in Date:
-     </label>
-     <input id="movein" type="date"/>
-    </div>
-    <div class="form-group">
-     <label for="message">
-      Tell us about yourself:
-     </label>
-     <textarea id="message" rows="4"></textarea>
-    </div>
-    <button type="submit">
-     Submit Application
-    </button>
-   </form>
-  </section>
-  <footer>
-   © 2025 SoberHouseManager |
-   <a href="mailto:support@soberhousemanager.com" style="color:white;">
-    Contact Support
-   </a>
-  </footer>
-  <script src="firestore-apply.js">
-  </script>
-  <script>
-   document.querySelector("form").addEventListener("submit", submitApplication);
-  </script>
-  <p id="submit-msg" style="text-align:center;margin-top:1rem;">
-  </p>
-  <script src="apply-handler.js">
-  </script>
- </body>
+
+  <main>
+    <form id="application-form">
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email Address" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required />
+      <textarea id="whyJoin" placeholder="Why do you want to join?" required></textarea>
+      <button type="submit">Submit Application</button>
+    </form>
+    <p id="confirmation-message"></p>
+  </main>
+
+  <script type="module" src="apply-handler.js"></script>
+</body>
 </html>
