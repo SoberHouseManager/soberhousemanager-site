@@ -1,66 +1,106 @@
-<script>
-  async function loadApplications() {
-    const appList = document.getElementById("application-list");
-    appList.innerHTML = "Loading...";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  updateDoc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      appList.innerHTML = "❌ Not logged in.";
-      return;
-    }
+const firebaseConfig = {
+  apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+  authDomain: "soberhousemanager-3371d.firebaseapp.com",
+  projectId: "soberhousemanager-3371d",
+  storageBucket: "soberhousemanager-3371d.appspot.com",
+  messagingSenderId: "823636408266",
+  appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+};
 
-    try {
-      // Step 1: Get all house IDs for this manager
-      const housesSnap = await db.collection("houses").where("managerId", "==", user.uid).get();
-      const houseIds = housesSnap.docs.map(doc => doc.id);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-      if (houseIds.length === 0) {
-        appList.innerHTML = "No houses found for this manager.";
-        return;
-      }
+// Dummy manager email for test; replace this with actual logged-in user logic
+const currentManagerEmail = "test.manager@soberhouse.com";
 
-      // Step 2: Get all applications linked to these houses
-      const appsSnap = await db.collection("applications")
-        .where("houseId", "in", houseIds)
-        .orderBy("submittedAt", "desc")
-        .get();
+// Load applications for houses managed by the current manager
+async function loadApplications() {
+  const housesSnap = await getDocs(query(collection(db, "houses"), where("managerEmail", "==", currentManagerEmail)));
+  const houseIds = housesSnap.docs.map(doc => doc.id);
 
-      if (appsSnap.empty) {
-        appList.innerHTML = "No applications yet.";
-        return;
-      }
+  const appSnap = await getDocs(collection(db, "applications"));
+  const container = document.getElementById("application-list");
+  container.innerHTML = "";
 
-      let html = "<ul style='list-style:none;padding:0;'>";
-      appsSnap.forEach(doc => {
-        const data = doc.data();
-        html += `
-          <li style="border:1px solid #ccc; border-radius:8px; margin:10px; padding:15px;">
-            <strong>${data.name}</strong><br>
-            Email: ${data.email}<br>
-            Phone: ${data.phone}<br>
-            Status: <strong>${data.status}</strong><br>
-            Submitted: ${new Date(data.submittedAt.toDate()).toLocaleString()}<br><br>
-            <button onclick="updateStatus('${doc.id}', 'approved')" style="margin-right:10px;">✅ Approve</button>
-            <button onclick="updateStatus('${doc.id}', 'rejected')">❌ Reject</button>
-          </li>`;
-      });
-      html += "</ul>";
-      appList.innerHTML = html;
-    } catch (err) {
-      appList.innerHTML = "❌ Error loading applications: " + err.message;
-    }
-  }
+  appSnap.forEach(docSnap => {
+    const app = docSnap.data();
+    if (!houseIds.includes(app.houseId) || app.status !== "pending") return;
 
-  async function updateStatus(appId, status) {
-    try {
-      await db.collection("applications").doc(appId).update({ status });
-      loadApplications(); // refresh
-    } catch (err) {
-      alert("Error updating status: " + err.message);
-    }
-  }
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) loadApplications();
+    const div = document.createElement("div");
+    div.className = "application-card";
+    div.innerHTML = `
+      <h3>${app.fullName}</h3>
+      <p>Email: ${app.email}</p>
+      <p>Phone: ${app.phone}</p>
+      <p>Reason: ${app.whyJoin}</p>
+      <p>House ID: ${app.houseId}</p>
+      <button onclick="openApprovalForm('${docSnap.id}', '${app.email}', '${app.houseId}')">Approve</button>
+      <button onclick="rejectApplication('${docSnap.id}')">Reject</button>
+    `;
+    container.appendChild(div);
   });
-</script>
+}
+
+window.openApprovalForm = function (appId, email, houseId) {
+  const form = document.getElementById("approval-form");
+  form.style.display = "block";
+  form.dataset.appId = appId;
+  form.dataset.email = email;
+  form.dataset.houseId = houseId;
+};
+
+window.rejectApplication = async function (appId) {
+  await updateDoc(doc(db, "applications", appId), { status: "rejected" });
+  loadApplications();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadApplications();
+
+  const form = document.getElementById("approval-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const appId = form.dataset.appId;
+    const email = form.dataset.email;
+    const houseId = form.dataset.houseId;
+
+    const rent = parseFloat(document.getElementById("rent").value);
+    const deposit = parseFloat(document.getElementById("deposit").value);
+    const frequency = document.getElementById("frequency").value;
+    const recurring = document.getElementById("recurring").checked;
+
+    const residentId = email.replace(/[^a-zA-Z0-9]/g, "_");
+
+    await setDoc(doc(db, "residents", residentId), {
+      email,
+      houseId,
+      rent,
+      deposit,
+      frequency,
+      recurring,
+      balance: deposit,
+      nextDue: new Date().toISOString(),
+    });
+
+    await updateDoc(doc(db, "applications", appId), {
+      status: "approved",
+      linkedUserId: residentId,
+    });
+
+    form.reset();
+    form.style.display = "none";
+    loadApplications();
+  });
+});
