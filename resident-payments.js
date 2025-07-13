@@ -1,16 +1,30 @@
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { app } from './firebase-auth.js';
 
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+  authDomain: "soberhousemanager-3371d.firebaseapp.com",
+  projectId: "soberhousemanager-3371d",
+  storageBucket: "soberhousemanager-3371d.firebasestorage.app",
+  messagingSenderId: "931134241567",
+  appId: "1:931134241567:web:f4083f35033e9e7c170e2a",
+  measurementId: "G-L5SPVD901V"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// UI Elements
 const paymentSection = document.getElementById("payment-section");
 const paymentHistory = document.getElementById("payment-history");
 const currentBalance = document.getElementById("current-balance");
 const payNowButton = document.getElementById("pay-now");
 
+// Main Logic
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "resident-login.html";
@@ -47,6 +61,7 @@ onAuthStateChanged(auth, async (user) => {
     paymentHistory.appendChild(row);
   });
 
+  // Payment Intent
   payNowButton.addEventListener("click", async () => {
     const response = await fetch("https://us-central1-soberhousemanager.cloudfunctions.net/api/create-payment-intent", {
       method: "POST",
