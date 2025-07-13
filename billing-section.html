@@ -1,6 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Billing & Payments - SoberHouseManager</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="firebase-auth.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <div class="top-bar">SoberHouseManager - Billing</div>
+  <section class="section">
+    <h2>Billing & Payments</h2>
+    <p>Current Balance: <span id="current-balance">$0.00</span></p>
+    <button id="pay-now">Pay Now</button>
 
-<!-- Auto-Billing Setup Section -->
-<section id="billing-section">
-  <p>Loading billing options...</p>
-</section>
-<script src="/js/resident-dashboard.js"></script>
+    <div id="payment-form" style="display:none; margin-top: 1rem;">
+      <div id="payment-element"></div>
+      <button id="submit-payment">Submit Payment</button>
+    </div>
+
+    <h3>Payment History</h3>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr>
+      </thead>
+      <tbody id="payment-history"></tbody>
+    </table>
+  </section>
+
+  <script type="module" src="resident-payments.js"></script>
+</body>
+</html>
