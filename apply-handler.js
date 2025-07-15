@@ -19,9 +19,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const houseId = urlParams.get("house") || "unknown-house";
-
   const form = document.getElementById("application-form");
   const confirmation = document.getElementById("confirmation-message");
 
@@ -32,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email").value.trim();
     const phone = document.getElementById("phone").value.trim();
     const whyJoin = document.getElementById("whyJoin").value.trim();
+    const houseId = document.getElementById("house-id").value.trim(); // ✅ Get hidden field
+
+    if (!houseId) {
+      confirmation.textContent = "❌ Missing house ID. Please use the official application link.";
+      return;
+    }
 
     try {
       await addDoc(collection(db, "applications"), {
