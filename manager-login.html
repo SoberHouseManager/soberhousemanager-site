@@ -6,9 +6,7 @@
   <title>Manager Login</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -110,10 +108,17 @@
   <script>
     firebase.auth().onAuthStateChanged(user => {
       const nav = document.getElementById("nav-auth");
-      if (nav) {
-        nav.style.display = user ? "flex" : "none";
-      }
+      if (nav) nav.style.display = user ? "flex" : "none";
     });
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => window.location.href = "manager-dashboard.html")
+        .catch(error => alert("Login failed: " + error.message));
+    }
   </script>
 </body>
 </html>
