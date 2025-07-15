@@ -38,7 +38,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 0.75rem;
       margin-top: 0.5rem;
@@ -87,8 +87,8 @@
       query,
       where,
       getDocs,
-      getDoc,
       updateDoc,
+      setDoc,
       doc
     } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -136,12 +136,14 @@
         location.reload();
       });
 
-      const q = query(collection(db, "houses"), where("managerEmail", "==", user.email));
-      const snapshot = await getDocs(q);
+      const houseQuery = query(collection(db, "houses"), where("managerEmail", "==", user.email));
+      const houseSnapshot = await getDocs(houseQuery);
+      const managerHouseIds = [];
 
-      snapshot.forEach(async (docSnap) => {
+      for (const docSnap of houseSnapshot.docs) {
         const data = docSnap.data();
         const id = docSnap.id;
+        managerHouseIds.push(id);
 
         const div = document.createElement("div");
         div.className = "house-card";
@@ -150,8 +152,8 @@
           <p><strong>Location:</strong> ${data.location}</p>
           <p><strong>Number of Beds:</strong> ${data.numberOfBeds}</p>
           <div class="copy-link">
-            <span>apply.html?houseId=${id}</span>
-            <button onclick="navigator.clipboard.writeText('apply.html?houseId=${id}')">Copy Link</button>
+            <span>apply.html?house=${id}</span>
+            <button onclick="navigator.clipboard.writeText('apply.html?house=${id}')">Copy Link</button>
           </div>
           <button onclick="editHouseName('${id}')">Edit House Name</button>
           <h4 style="margin-top: 2rem;">Residents</h4>
@@ -167,27 +169,77 @@
         usersSnap.forEach(userSnap => {
           const r = userSnap.data();
           const status = r.balanceDue > 0 ? "Past Due" : "Current";
-
           const res = document.createElement("div");
           res.className = "resident-card";
           res.innerHTML = `
-            <p><strong>${r.firstName} ${r.lastName}</strong></p>
+            <p><strong>${r.fullName || r.firstName + ' ' + r.lastName}</strong></p>
             <p>Status: <strong>${status}</strong></p>
             <button onclick="alert('Payment History Coming Soon')">View Payment History</button>
             <button onclick="alert('Edit Rent Feature Coming Soon')">Edit Rent</button>
           `;
           resDiv.appendChild(res);
         });
+      }
+
+      // Load Pending Applications
+      const appSnap = await getDocs(collection(db, "applications"));
+      appSnap.forEach(async (appDoc) => {
+        const app = appDoc.data();
+        if (app.status !== "pending" || !managerHouseIds.includes(app.houseId)) return;
+
+        const div = document.createElement("div");
+        div.className = "house-card";
+        div.innerHTML = `
+          <h3>${app.fullName}</h3>
+          <p><strong>Email:</strong> ${app.email}</p>
+          <p><strong>Phone:</strong> ${app.phone}</p>
+          <p><strong>Why Join:</strong> ${app.whyJoin}</p>
+          <form>
+            <label>Rent Name: <input name="rentName" required /></label>
+            <label>Rent Amount: <input type="number" name="rentAmount" required /></label>
+            <label>Deposit: <input type="number" name="deposit" required /></label>
+            <label>Frequency:
+              <select name="frequency">
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </label>
+            <label>First Due Date: <input type="date" name="dueDate" required /></label>
+            <label><input type="checkbox" name="recurring" /> Enable Auto Billing</label>
+            <button type="submit">Approve Resident</button>
+          </form>
+        `;
+        div.querySelector("form").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const f = e.target;
+          await setDoc(doc(db, "users", appDoc.id), {
+            fullName: app.fullName,
+            email: app.email,
+            phone: app.phone,
+            houseId: app.houseId,
+            rentName: f.rentName.value.trim(),
+            rentAmount: parseFloat(f.rentAmount.value),
+            deposit: parseFloat(f.deposit.value),
+            frequency: f.frequency.value,
+            dueDate: f.dueDate.value,
+            recurring: f.recurring.checked,
+            role: "resident",
+            balanceDue: parseFloat(f.deposit.value),
+            createdAt: new Date().toISOString()
+          });
+          await updateDoc(doc(db, "applications", appDoc.id), { status: "approved" });
+          alert("✅ Approved and added to residents.");
+          div.remove();
+        });
+        houseList.appendChild(div);
       });
     });
 
     window.editHouseName = async (houseId) => {
       const newName = prompt("Enter new house name:");
       if (!newName) return;
-
       await updateDoc(doc(db, "houses", houseId), { houseName: newName });
-      const nameEl = document.getElementById(`house-name-${houseId}`);
-      if (nameEl) nameEl.textContent = newName;
+      document.getElementById(`house-name-${houseId}`).textContent = newName;
       alert("House name updated!");
     };
   </script>
