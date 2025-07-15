@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const fullName = document.getElementById("fullName").value.trim();
     const email = document.getElementById("email").value.trim();
     const phone = document.getElementById("phone").value.trim();
-    const whyJoin = document.getElementById("whyJoin").value.trim();
     const password = document.getElementById("password").value.trim();
 
     const [firstName, ...lastParts] = fullName.split(" ");
@@ -43,9 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
         lastName,
         email,
         phone,
-        whyJoin,
+        password,
         houseId,
-        password, // stored as plain text (optional: hash before storing for security)
         status: "pending",
         submittedAt: serverTimestamp()
       });
