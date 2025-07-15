@@ -17,16 +17,12 @@
       <input type="email" id="email" placeholder="Email Address" required />
       <input type="tel" id="phone" placeholder="Phone Number" required />
       <textarea id="whyJoin" placeholder="Why do you want to join?" required></textarea>
-
-      <!-- 🔒 Hidden houseId field -->
       <input type="hidden" id="house-id" name="houseId" />
-
       <button type="submit">Submit Application</button>
     </form>
     <p id="confirmation-message"></p>
   </main>
 
-  <!-- ✅ Autofill houseId from URL -->
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const houseId = urlParams.get("houseId");
