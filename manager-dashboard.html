@@ -4,40 +4,202 @@
   <meta charset="UTF-8" />
   <title>Manager Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs,
+      getDoc,
+      doc,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.appspot.com",
+      messagingSenderId: "823636408266",
+      appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const appList = document.getElementById("application-list");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const houseQuery = query(collection(db, "houses"), where("managerEmail", "==", user.email));
+      const houseSnap = await getDocs(houseQuery);
+      const houseIds = houseSnap.docs.map(doc => doc.id);
+
+      const appsSnap = await getDocs(collection(db, "applications"));
+      appsSnap.forEach((docSnap) => {
+        const data = docSnap.data();
+        if (data.status !== "approved" && houseIds.includes(data.houseId)) {
+          const container = document.createElement("div");
+          container.className = "item";
+          container.innerHTML = `
+            <strong>${data.firstName} ${data.lastName}</strong><br>
+            Email: ${data.email}<br>
+            House ID: ${data.houseId}<br><br>
+            <form class="approval-form">
+              <label>Rent Name: <input type="text" name="rentName" required></label><br>
+              <label>Rent Amount ($): <input type="number" name="rent" required></label><br>
+              <label>Deposit / Move-in Fee ($): <input type="number" name="deposit" required></label><br>
+              <label>Payment Frequency:
+                <select name="frequency" required>
+                  <option value="">Choose</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="weekly">Weekly</option>
+                </select>
+              </label><br>
+              <label>First Due Date: <input type="date" name="dueDate" required></label><br>
+              <label><input type="checkbox" name="recurring"> Enable Recurring Payments</label><br><br>
+              <button type="submit">Approve & Set Rent</button>
+            </form>
+          `;
+
+          container.querySelector("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const rentName = form.rentName.value;
+            const rentAmount = parseFloat(form.rent.value);
+            const deposit = parseFloat(form.deposit.value);
+            const frequency = form.frequency.value;
+            const dueDate = form.dueDate.value;
+            const recurring = form.recurring.checked;
+
+            await setDoc(doc(db, "users", docSnap.id), {
+              email: data.email,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              houseId: data.houseId,
+              role: "resident",
+              rentName,
+              rentAmount,
+              deposit,
+              frequency,
+              dueDate,
+              recurring,
+              createdAt: new Date().toISOString()
+            });
+
+            await updateDoc(doc(db, "applications", docSnap.id), {
+              status: "approved"
+            });
+
+            alert("Resident approved and rent set.");
+            container.remove();
+          });
+
+          appList.appendChild(container);
+        }
+      });
+    });
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #319795;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      margin-left: 1rem;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .item {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      width: 100%;
+      background-color: #319795;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #267c7e;
+    }
+  </style>
 </head>
 <body>
- <header>
-  <h1>SoberHouseManager</h1>
-  <nav>
-    <a href="manager-dashboard.html">Dashboard</a>
-    <a href="index.html">Home</a>
-    <a href="#" id="logoutBtn">Logout</a>
-  </nav>
-</header>
+  <header>
+    <h1>SoberHouseManager</h1>
+    <nav>
+      <a href="manager-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
 
   <main>
     <section>
       <h2>Pending Applications</h2>
       <div id="application-list"></div>
     </section>
-
-    <section>
-      <form id="approval-form" style="display:none; margin-top: 20px;">
-        <h3>Approve Applicant</h3>
-        <label>Rent Amount ($): <input type="number" id="rent" required></label><br><br>
-        <label>Deposit / Move-in Fee ($): <input type="number" id="deposit" required></label><br><br>
-        <label>Payment Frequency:
-          <select id="frequency">
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </label><br><br>
-        <label><input type="checkbox" id="recurring"> Enable Recurring Payments</label><br><br>
-        <button type="submit">Confirm Approval</button>
-      </form>
-    </section>
   </main>
-
-  <script type="module" src="application-viewer.js"></script>
 </body>
 </html>
