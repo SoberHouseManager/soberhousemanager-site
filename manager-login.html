@@ -87,7 +87,7 @@
 <body>
   <div class="top-bar">
     <div style="font-size: 1.5rem;">SoberHouseManager</div>
-    <div>
+    <div id="nav-auth" style="display: none;">
       <a href="dashboard.html">Dashboard</a>
       <a href="index.html">Home</a>
       <a href="logout.html">Logout</a>
@@ -107,5 +107,13 @@
   </div>
 
   <script src="firebase-auth.js"></script>
+  <script>
+    firebase.auth().onAuthStateChanged(user => {
+      const nav = document.getElementById("nav-auth");
+      if (nav) {
+        nav.style.display = user ? "flex" : "none";
+      }
+    });
+  </script>
 </body>
 </html>
