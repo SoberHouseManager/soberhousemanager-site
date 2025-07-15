@@ -54,6 +54,7 @@
       border-radius: 5px;
       font-size: 1rem;
       cursor: pointer;
+      margin-top: 0.5rem;
     }
     button:hover {
       background-color: #267c7e;
@@ -80,7 +81,9 @@
       addDoc,
       query,
       where,
-      getDocs
+      getDocs,
+      updateDoc,
+      doc
     } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -128,16 +131,18 @@
 
       const q = query(collection(db, "houses"), where("managerEmail", "==", user.email));
       const snapshot = await getDocs(q);
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const id = doc.id;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+
         const div = document.createElement("div");
         div.className = "house-card";
         div.innerHTML = `
-          <h3>${data.houseName}</h3>
+          <h3 id="house-name-${id}">${data.houseName}</h3>
           <p><strong>Location:</strong> ${data.location}</p>
           <p><strong>Number of Beds:</strong> ${data.numberOfBeds}</p>
           <button onclick="showHouseDetails('${id}', '${data.houseName}')">View House Details</button>
+          <button onclick="editHouseName('${id}')">Edit House Name</button>
         `;
         houseList.appendChild(div);
       });
@@ -159,6 +164,18 @@
       `;
       document.body.appendChild(detail);
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    };
+
+    window.editHouseName = async (houseId) => {
+      const newName = prompt("Enter new house name:");
+      if (!newName) return;
+
+      await updateDoc(doc(db, "houses", houseId), { houseName: newName });
+
+      const nameEl = document.getElementById(`house-name-${houseId}`);
+      if (nameEl) nameEl.textContent = newName;
+
+      alert("House name updated!");
     };
   </script>
 </head>
@@ -186,5 +203,6 @@
   </main>
 </body>
 </html>
+
 
 </html>
