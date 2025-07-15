@@ -67,6 +67,12 @@
       display: flex;
       justify-content: space-between;
     }
+    .resident-entry {
+      background: #f9f9f9;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+    }
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -110,6 +116,7 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) return window.location.href = "login.html";
+
       houseForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const name = houseForm["house-name"].value.trim();
@@ -131,7 +138,7 @@
 
       const q = query(collection(db, "houses"), where("managerEmail", "==", user.email));
       const snapshot = await getDocs(q);
-      snapshot.forEach(docSnap => {
+      snapshot.forEach(async (docSnap) => {
         const data = docSnap.data();
         const id = docSnap.id;
 
@@ -141,41 +148,56 @@
           <h3 id="house-name-${id}">${data.houseName}</h3>
           <p><strong>Location:</strong> ${data.location}</p>
           <p><strong>Number of Beds:</strong> ${data.numberOfBeds}</p>
+          <div class="copy-link">
+            <span>apply.html?houseId=${id}</span>
+            <button onclick="navigator.clipboard.writeText('apply.html?houseId=${id}')">Copy</button>
+          </div><br>
           <button onclick="showHouseDetails('${id}', '${data.houseName}')">View House Details</button>
           <button onclick="editHouseName('${id}')">Edit House Name</button>
+          <div id="residents-${id}"></div>
         `;
         houseList.appendChild(div);
+
+        // Fetch and display residents
+        const residentsQ = query(collection(db, "users"), where("houseId", "==", id));
+        const residentSnap = await getDocs(residentsQ);
+        const resDiv = div.querySelector(`#residents-${id}`);
+        if (!residentSnap.empty) {
+          residentSnap.forEach(res => {
+            const r = res.data();
+            const resEl = document.createElement("div");
+            resEl.className = "resident-entry";
+            resEl.innerHTML = `
+              <strong>${r.firstName} ${r.lastName}</strong><br>
+              Email: ${r.email}<br>
+              Rent: ${r.rentName} - $${r.rentAmount} (${r.frequency})<br>
+              Due: ${r.dueDate}<br>
+              Status: ${getStatus(r.dueDate)}<br>
+            `;
+            resDiv.appendChild(resEl);
+          });
+        } else {
+          resDiv.innerHTML = "<p>No residents yet.</p>";
+        }
       });
     });
 
-    window.showHouseDetails = (houseId, houseName) => {
-      const detail = document.createElement("div");
-      detail.className = "house-details";
-      detail.innerHTML = `
-        <h3>${houseName}</h3>
-        <p><strong>House ID:</strong> ${houseId}</p>
-        <div class="copy-link">
-          <span>apply.html?houseId=${houseId}</span>
-          <button onclick="navigator.clipboard.writeText('apply.html?houseId=${houseId}')">Copy</button>
-        </div>
-        <br>
-        <button onclick="alert('Pending Applications View Coming Soon')">View Pending Applications</button>
-        <button onclick="alert('Resident View Coming Soon')">View Current Residents</button>
-      `;
-      document.body.appendChild(detail);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    };
+    function getStatus(dueDateStr) {
+      const dueDate = new Date(dueDateStr);
+      const today = new Date();
+      return dueDate >= today ? "On Time" : "<span style='color:red;'>Past Due</span>";
+    }
 
     window.editHouseName = async (houseId) => {
       const newName = prompt("Enter new house name:");
       if (!newName) return;
-
       await updateDoc(doc(db, "houses", houseId), { houseName: newName });
-
-      const nameEl = document.getElementById(`house-name-${houseId}`);
-      if (nameEl) nameEl.textContent = newName;
-
+      document.getElementById(`house-name-${houseId}`).textContent = newName;
       alert("House name updated!");
+    };
+
+    window.showHouseDetails = (id, name) => {
+      alert(`Details for ${name} coming soon.`);
     };
   </script>
 </head>
@@ -202,7 +224,4 @@
     <div id="house-list"></div>
   </main>
 </body>
-</html>
-
-
 </html>
