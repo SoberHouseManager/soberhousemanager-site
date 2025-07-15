@@ -7,14 +7,12 @@
   <link rel="stylesheet" href="style.css">
   <style>
     * { box-sizing: border-box; }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
       padding: 0;
     }
-
     .top-bar {
       background-color: #2e7d7b;
       color: white;
@@ -23,14 +21,12 @@
       justify-content: space-between;
       align-items: center;
     }
-
     .top-bar a {
       color: white;
       text-decoration: none;
       font-weight: bold;
       margin-left: 1rem;
     }
-
     .login-wrapper {
       display: flex;
       justify-content: center;
@@ -38,7 +34,6 @@
       height: 80vh;
       padding: 1rem;
     }
-
     .login-box {
       background-color: white;
       padding: 2rem;
@@ -48,7 +43,6 @@
       width: 100%;
       text-align: center;
     }
-
     .login-box input {
       width: 100%;
       padding: 1rem;
@@ -56,7 +50,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
     button {
       background-color: #2e7d7b;
       color: white;
@@ -67,16 +60,13 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #256b66;
     }
-
     a {
       color: #2e7d7b;
       text-decoration: none;
     }
-
     a:hover {
       text-decoration: underline;
     }
@@ -107,8 +97,35 @@
     </div>
   </div>
 
-  <script src="firebase-auth.js"></script>
+  <!-- Firebase v8 SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.appspot.com",
+      messagingSenderId: "823636408266",
+      appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          const isManager = email.includes("manager");
+          window.location.href = isManager ? "manager-dashboard.html" : "resident-dashboard.html";
+        })
+        .catch(err => {
+          document.getElementById("login-message").textContent = "Login failed: " + err.message;
+        });
+    });
+
     firebase.auth().onAuthStateChanged(user => {
       const nav = document.getElementById("nav-auth");
       if (nav) nav.style.display = user ? "flex" : "none";
