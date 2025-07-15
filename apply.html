@@ -17,19 +17,11 @@
       <input type="email" id="email" placeholder="Email Address" required />
       <input type="tel" id="phone" placeholder="Phone Number" required />
       <textarea id="whyJoin" placeholder="Why do you want to join?" required></textarea>
-      <input type="hidden" id="house-id" name="houseId" />
+      <input type="password" id="password" placeholder="Create a Password" required />
       <button type="submit">Submit Application</button>
     </form>
     <p id="confirmation-message"></p>
   </main>
-
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const houseId = urlParams.get("houseId");
-    if (houseId) {
-      document.getElementById("house-id").value = houseId;
-    }
-  </script>
 
   <script type="module" src="apply-handler.js"></script>
 </body>
