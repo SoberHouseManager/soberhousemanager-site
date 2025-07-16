@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resident Details | SoberHouseManager</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f3f9f8;
+    }
+    header {
+      background-color: #2e7d7b;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2e7d7b;
+      margin-bottom: 2rem;
+    }
+    .info-row {
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #444;
+    }
+    .billing-button {
+      margin-top: 2rem;
+      display: block;
+      text-align: center;
+    }
+    .billing-button button {
+      background-color: #319795;
+      color: white;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const houseId = params.get("houseId");
+    const residentEmail = params.get("residentEmail");
+
+    async function loadResident() {
+      if (!houseId || !residentEmail) return;
+
+      const docRef = doc(db, "houses", houseId, "residents", residentEmail);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("name").textContent = data.fullName || "N/A";
+        document.getElementById("email").textContent = residentEmail;
+        document.getElementById("phone").textContent = data.phone || "N/A";
+        document.getElementById("house").textContent = data.houseName || houseId;
+        document.getElementById("moveIn").textContent = data.moveInDate || "N/A";
+        document.getElementById("status").textContent = data.status || "Active";
+
+        document.getElementById("billingLink").href = `resident-billing.html?houseId=${houseId}&residentEmail=${residentEmail}`;
+      } else {
+        alert("Resident not found.");
+      }
+    }
+
+    window.onload = loadResident;
+  </script>
+</head>
+<body>
+  <header>
+    <div>SoberHouseManager</div>
+    <div><a href="manager-dashboard.html" style="color: white; text-decoration: none;">Back to Dashboard</a></div>
+  </header>
+
+  <div class="container">
+    <h2>Resident Details</h2>
+    <div class="info-row"><span class="info-label">Full Name:</span> <span id="name">Loading...</span></div>
+    <div class="info-row"><span class="info-label">Phone:</span> <span id="phone">Loading...</span></div>
+    <div class="info-row"><span class="info-label">Email:</span> <span id="email">Loading...</span></div>
+    <div class="info-row"><span class="info-label">House Name:</span> <span id="house">Loading...</span></div>
+    <div class="info-row"><span class="info-label">Move-In Date:</span> <span id="moveIn">Loading...</span></div>
+    <div class="info-row"><span class="info-label">Status:</span> <span id="status">Loading...</span></div>
+
+    <div class="billing-button">
+      <a id="billingLink" href="#"><button>Go to Billing</button></a>
+    </div>
+  </div>
+</body>
+</html>
