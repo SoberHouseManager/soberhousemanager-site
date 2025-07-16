@@ -1,113 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
+<head>
   <meta charset="utf-8"/>
   <title>SoberHouseManager - Professional Sober Living Software</title>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    margin-bottom: 2rem;
-  }
-  header {
-    background-color: #2e7d7b;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-  }
-  header img {
-    height: 50px;
-  }
-  nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: #e6f4f3;
-  }
-  .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .hero p {
-    font-size: 1.2rem;
-    background-color: #f5f5f5;
-    padding: 1rem;
-    border-radius: 5px;
-    display: inline-block;
-  }
-  .hero button {
-    background-color: #319795;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    margin: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  .section {
-    padding: 3rem 2rem;
-    max-width: 1000px;
-    margin: auto;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-  .grid div {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    text-align: center;
-  }
-  h2 {
-    text-align: center;
-    color: #2e7d7b;
-  }
-  .faq, .how-it-works, .pricing {
-    padding: 0;
-    background: #fdfdfd;
-    color: #222;
-  }
-  footer {
-    background-color: #2e7d7b;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    margin-top: 2rem;
-  }
-  footer a {
-    color: white;
-  }
-  table {
-    margin:auto;
-    border-collapse: collapse;
-    width: 80%;
-  }
-  table th, table td {
-    border: 1px solid #ddd;
-    padding: 0.75rem;
-  }
-  table th {
-    background: #ddd;
-  }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      margin-bottom: 2rem;
+      background: #f0fdfd;
+    }
+    header {
+      background-color: #2e7d7b;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 2rem;
+    }
+    header img {
+      height: 50px;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #e6f4f3;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2e7d7b;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .hero button {
+      background-color: #319795;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .section {
+      padding: 3rem 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .grid div {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    h2 {
+      text-align: center;
+      color: #2e7d7b;
+    }
+    .faq, .how-it-works, .pricing {
+      background: #fdfdfd;
+      color: #222;
+    }
+    footer {
+      background-color: #2e7d7b;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    footer a {
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        margin-top: 0.5rem;
+      }
+    }
   </style>
-  <link href="style.css" rel="stylesheet"/>
- </head>
- <body>
+</head>
+<body>
+
   <header>
-    <img src="assets/logo-white.png" alt="SoberHouseManager Logo">
+    <a href="index.html">
+      <img src="assets/logo-white.png" alt="SoberHouseManager Logo" />
+    </a>
     <nav>
       <a href="index.html">Home</a>
       <a href="features.html">Features</a>
@@ -118,104 +123,107 @@
   </header>
 
   <section class="hero">
-   <h1>Run Your Sober Living Home. Professionally.</h1>
-   <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
-   <button onclick="location.href='apply.html'">Start Free</button>
-   <button onclick="location.href='features.html'">Learn More</button>
-   <button onclick="location.href='resident-login.html'">Resident Login</button>
-   <button onclick="location.href='manager-login.html'">Manager Login</button>
+    <h1>Run Your Sober Living Home. Professionally.</h1>
+    <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
+    <div class="hero-buttons">
+      <button onclick="location.href='features.html'">Learn More</button>
+      <button onclick="location.href='resident-login.html'">Resident Login</button>
+      <button onclick="location.href='manager-login.html'">Manager Login</button>
+      <button onclick="location.href='apply.html'">Start Free</button>
+    </div>
   </section>
 
   <section class="section">
-   <h2>Key Features</h2>
-   <div class="grid">
-    <div>
-     <h3>💳 Automated Payments</h3>
-     <p>Rent, fees, and deposits auto-charged to residents.</p>
+    <h2>Key Features</h2>
+    <div class="grid">
+      <div>
+        <h3>💳 Automated Payments</h3>
+        <p>Rent, fees, and deposits auto-charged to residents.</p>
+      </div>
+      <div>
+        <h3>📝 Resident Applications</h3>
+        <p>Collect and manage applications in one place.</p>
+      </div>
+      <div>
+        <h3>📆 Move-In Tracker</h3>
+        <p>Keep tabs on upcoming move-ins and open beds.</p>
+      </div>
+      <div>
+        <h3>📥 Centralized Documents</h3>
+        <p>Store agreements, test logs, and contact info.</p>
+      </div>
     </div>
-    <div>
-     <h3>📝 Resident Applications</h3>
-     <p>Collect and manage applications in one place.</p>
-    </div>
-    <div>
-     <h3>📆 Move-In Tracker</h3>
-     <p>Keep tabs on upcoming move-ins and open beds.</p>
-    </div>
-    <div>
-     <h3>📥 Centralized Documents</h3>
-     <p>Store agreements, test logs, and contact info.</p>
-    </div>
-   </div>
   </section>
 
   <section class="section how-it-works">
-   <h2>How It Works</h2>
-   <ol>
-    <li><strong>Create your account:</strong> Add your houses, managers, and resident info.</li>
-    <li><strong>Set payment rules:</strong> Customize due dates, rent amounts, and payment types.</li>
-    <li><strong>Automate everything:</strong> Residents pay. You track. Simple.</li>
-   </ol>
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Create your account:</strong> Add your houses, managers, and resident info.</li>
+      <li><strong>Set payment rules:</strong> Customize due dates, rent amounts, and payment types.</li>
+      <li><strong>Automate everything:</strong> Residents pay. You track. Simple.</li>
+    </ol>
   </section>
 
   <section class="section">
-   <h2>Built by Sober Living Owners, For Sober Living Owners</h2>
-   <p style="text-align: center; max-width: 700px; margin: auto;">
-    We couldn’t find affordable, simple software for our own homes. So we built it. SoberHouseManager is designed specifically for the realities of running a recovery residence.
-   </p>
+    <h2>Built by Sober Living Owners, For Sober Living Owners</h2>
+    <p style="text-align: center; max-width: 700px; margin: auto;">
+      We couldn’t find affordable, simple software for our own homes. So we built it. SoberHouseManager is designed specifically for the realities of running a recovery residence.
+    </p>
   </section>
 
   <section class="section pricing">
-   <h2>Pricing</h2>
-   <table>
-    <tr>
-     <th>Plan</th>
-     <th>Cost</th>
-     <th>Who Pays</th>
-     <th>Included</th>
-    </tr>
-    <tr>
-     <td>Basic</td>
-     <td>$0/mo</td>
-     <td>Resident</td>
-     <td>All core features</td>
-    </tr>
-    <tr>
-     <td>Pro (future)</td>
-     <td>TBD</td>
-     <td>Resident/House</td>
-     <td>Advanced tools</td>
-    </tr>
-   </table>
-   <p style="text-align:center;">
-    We charge a small transaction fee to residents only. No monthly fees for owners or house managers.
-   </p>
+    <h2>Pricing</h2>
+    <table style="margin:auto; border-collapse: collapse; width: 80%;">
+      <tr style="background:#ddd;">
+        <th>Plan</th>
+        <th>Cost</th>
+        <th>Who Pays</th>
+        <th>Included</th>
+      </tr>
+      <tr>
+        <td>Basic</td>
+        <td>$0/mo</td>
+        <td>Resident</td>
+        <td>All core features</td>
+      </tr>
+      <tr>
+        <td>Pro (future)</td>
+        <td>TBD</td>
+        <td>Resident/House</td>
+        <td>Advanced tools</td>
+      </tr>
+    </table>
+    <p style="text-align:center;">
+      We charge a small transaction fee to residents only. No monthly fees for owners or house managers.
+    </p>
   </section>
 
   <section class="section faq">
-   <h2>FAQs</h2>
-   <div class="grid">
-    <div>
-     <h4>Is it free for owners?</h4>
-     <p>Yes, owners and house managers pay nothing.</p>
+    <h2>FAQs</h2>
+    <div class="grid">
+      <div>
+        <h4>Is it free for owners?</h4>
+        <p>Yes, owners and house managers pay nothing.</p>
+      </div>
+      <div>
+        <h4>Can I manage multiple houses?</h4>
+        <p>Yes, you can create and manage multiple homes.</p>
+      </div>
+      <div>
+        <h4>Can residents pay automatically?</h4>
+        <p>Yes, they can set up recurring payments via ACH or card.</p>
+      </div>
+      <div>
+        <h4>Is this secure?</h4>
+        <p>We use trusted, encrypted payment processors like Stripe.</p>
+      </div>
     </div>
-    <div>
-     <h4>Can I manage multiple houses?</h4>
-     <p>Yes, you can create and manage multiple homes.</p>
-    </div>
-    <div>
-     <h4>Can residents pay automatically?</h4>
-     <p>Yes, they can set up recurring payments via ACH or card.</p>
-    </div>
-    <div>
-     <h4>Is this secure?</h4>
-     <p>We use trusted, encrypted payment processors like Stripe.</p>
-    </div>
-   </div>
   </section>
 
   <footer>
-   © 2025 SoberHouseManager |
-   <a href="mailto:support@soberhousemanager.com">Contact Support</a>
+    © 2025 SoberHouseManager |
+    <a href="mailto:support@soberhousemanager.com">Contact Support</a>
   </footer>
- </body>
+
+</body>
 </html>
