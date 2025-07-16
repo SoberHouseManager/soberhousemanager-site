@@ -1,1 +1,173 @@
-<!-- Placeholder: Billing page coming next -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resident Billing - SoberHouseManager</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+  <script src="firebase-auth.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #2e7d7b;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2e7d7b;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      width: 100%;
+    }
+    button {
+      padding: 0.7rem 1.5rem;
+      background-color: #319795;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .section {
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #e0f7f5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Resident Billing
+  </header>
+  <div class="container">
+    <h2>Resident Billing Dashboard</h2>
+
+    <div class="section">
+      <h3>Recurring Charges</h3>
+      <label>Label</label><input type="text" id="recLabel" />
+      <label>Amount</label><input type="number" id="recAmount" />
+      <label>Frequency</label>
+      <select id="recFrequency">
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+      <label>Due Date</label><input type="date" id="recDueDate" />
+      <button onclick="addRecurringCharge()">Add Recurring Charge</button>
+    </div>
+
+    <div class="section">
+      <h3>One-Time Charge</h3>
+      <label>Label</label><input type="text" id="oneLabel" />
+      <label>Amount</label><input type="number" id="oneAmount" />
+      <label>Due Date</label><input type="date" id="oneDueDate" />
+      <button onclick="addOneTimeCharge()">Send One-Time Charge</button>
+    </div>
+
+    <div class="section">
+      <h3>Payment History</h3>
+      <table id="chargeTable">
+        <thead>
+          <tr><th>Label</th><th>Amount</th><th>Due</th><th>Status</th><th>Paid</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const residentId = urlParams.get('residentId');
+
+    const db = firebase.firestore();
+
+    function addRecurringCharge() {
+      const label = document.getElementById('recLabel').value;
+      const amount = parseFloat(document.getElementById('recAmount').value);
+      const frequency = document.getElementById('recFrequency').value;
+      const dueDate = document.getElementById('recDueDate').value;
+
+      db.collection("charges").add({
+        residentId,
+        label,
+        amount,
+        frequency,
+        dueDate,
+        isRecurring: true,
+        status: "unpaid",
+        createdAt: new Date()
+      });
+      alert("Recurring charge added.");
+    }
+
+    function addOneTimeCharge() {
+      const label = document.getElementById('oneLabel').value;
+      const amount = parseFloat(document.getElementById('oneAmount').value);
+      const dueDate = document.getElementById('oneDueDate').value;
+
+      db.collection("charges").add({
+        residentId,
+        label,
+        amount,
+        dueDate,
+        isRecurring: false,
+        status: "unpaid",
+        createdAt: new Date()
+      });
+      alert("One-time charge added.");
+    }
+
+    function loadCharges() {
+      db.collection("charges").where("residentId", "==", residentId).get().then(snapshot => {
+        const tbody = document.querySelector("#chargeTable tbody");
+        tbody.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.label}</td>
+            <td>$${data.amount}</td>
+            <td>${data.dueDate}</td>
+            <td>${data.status}</td>
+            <td>${data.paidAt ? new Date(data.paidAt.seconds * 1000).toLocaleDateString() : '-'}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) loadCharges();
+      else window.location.href = "manager-login.html";
+    });
+  </script>
+</body>
+</html>
