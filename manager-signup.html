@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manager Sign Up</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .signup-box {
+      background-color: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .signup-box h2 {
+      margin-bottom: 1.5rem;
+      color: #2e7d7b;
+    }
+    .signup-box input {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #319795;
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #247c7a;
+    }
+    a {
+      color: #2e7d7b;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    #signup-message {
+      margin-top: 1rem;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-box">
+    <h2>Manager Sign Up</h2>
+    <form id="signup-form">
+      <input type="email" placeholder="Email" id="email" required />
+      <input type="password" placeholder="Password" id="password" required />
+      <input type="password" placeholder="Confirm Password" id="confirm-password" required />
+      <button type="submit">Create Account</button>
+      <p id="signup-message"></p>
+    </form>
+  </div>
+
+  <!-- Firebase v8 SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.appspot.com",
+      messagingSenderId: "823636408266",
+      appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    document.getElementById("signup-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+      const message = document.getElementById("signup-message");
+
+      if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        return;
+      }
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "manager-dashboard.html";
+        })
+        .catch(err => {
+          message.textContent = "Signup failed: " + err.message;
+        });
+    });
+  </script>
+</body>
+</html>
