@@ -1,4 +1,4 @@
-<!-- Save as manager-dashboard.html -->
+<!-- manager-dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +20,7 @@
       align-items: center;
     }
     header h1 {
-      color: #000;
+      color: white;
       margin: 0;
     }
     nav a {
@@ -77,12 +77,8 @@
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import {
-      getAuth, onAuthStateChanged, signOut
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import {
-      getFirestore, collection, addDoc, query, where, getDocs, updateDoc, setDoc, doc
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, updateDoc, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
@@ -167,8 +163,8 @@
           res.innerHTML = `
             <p><strong>${r.fullName || r.firstName + ' ' + r.lastName}</strong></p>
             <p>Status: <strong>${status}</strong></p>
-            <button onclick="alert('Payment History Coming Soon')">View Payment History</button>
-            <button onclick="alert('Edit Rent Feature Coming Soon')">Edit Rent</button>
+            <button onclick="window.location.href='resident-history.html?residentId=${userSnap.id}'">View Payment History</button>
+            <button onclick="window.location.href='resident-billing.html?residentId=${userSnap.id}'">Edit Rent</button>
           `;
           resDiv.appendChild(res);
         });
@@ -185,7 +181,6 @@
           <h3>${app.fullName}</h3>
           <p><strong>Email:</strong> ${app.email}</p>
           <p><strong>Phone:</strong> ${app.phone}</p>
-          <p><strong>Why Join:</strong> ${app.whyJoin}</p>
           <form>
             <label>Rent Name: <input name="rentName" required /></label>
             <label>Rent Amount: <input type="number" name="rentAmount" required /></label>
@@ -220,7 +215,7 @@
             createdAt: new Date().toISOString()
           });
           await updateDoc(doc(db, "applications", appDoc.id), { status: "approved" });
-          alert("✅ Approved and added to residents.");
+          alert("Approved and added to residents.");
           div.remove();
         });
         houseList.appendChild(div);
