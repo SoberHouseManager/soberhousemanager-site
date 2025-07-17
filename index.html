@@ -1,200 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8"/>
   <title>SoberHouseManager - Professional Sober Living Software</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      background-color: #f9f9f9;
-      color: #1a202c;
+      margin-bottom: 2rem;
+      background: #f0fdfd;
     }
     header {
-      background-color: #2f7e79;
-      padding: 1rem 2rem;
+      background-color: #2e7d7b;
+      color: white;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
+      padding: 0.5rem 2rem;
     }
     header img {
       height: 50px;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
     }
     .hero {
-      background-color: #ffffff;
       text-align: center;
-      padding: 5rem 2rem;
+      padding: 4rem 2rem;
+      background: #e6f4f3;
     }
-    .hero h1, .hero h2 {
-      font-size: 2.75rem;
-      color: #2f7e79;
+    .hero h1 {
+      font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: #2e7d7b;
     }
     .hero p {
       font-size: 1.2rem;
-      max-width: 600px;
-      margin: 0 auto 2rem auto;
-      color: #4a5568;
+      margin-bottom: 2rem;
+      color: #444;
     }
     .hero button {
-      background-color: #2f7e79;
+      background-color: #2e7d7b;
       color: white;
-      padding: 1rem 2.5rem;
-      font-size: 1rem;
       border: none;
-      border-radius: 10px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
     }
-    .features {
-      padding: 4rem 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-    .feature {
-      background-color: #ffffff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .feature h3 {
-      color: #2f7e79;
-    }
-    .why-choose {
-      background-color: #e6f0ef;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-    .why-choose ul {
-      list-style: none;
-      padding: 0;
-      max-width: 600px;
-      margin: auto;
-    }
-    .why-choose li {
-      padding: 0.5rem 0;
-      font-size: 1.1rem;
-    }
-    .pricing {
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-    .plans {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .plan {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      width: 280px;
-    }
-    .plan h4 {
-      color: #2f7e79;
-    }
-    .testimonials {
-      background-color: #ffffff;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-    .testimonial {
-      max-width: 600px;
-      margin: auto;
-      font-style: italic;
-      color: #4a5568;
-    }
-    footer {
-      background-color: #2f7e79;
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-    }
-    footer a {
-      color: white;
-      text-decoration: underline;
+    .hero button:hover {
+      background-color: #246c69;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="assets/logo-white.png" alt="SoberHouseManager Logo" />
+    <img src="assets/logo-white.png" alt="SoberHouseManager Logo">
+    <nav>
+      <a href="login.html">Login</a>
+      <a href="about.html">About</a>
+      <a href="features.html">Features</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
   </header>
 
-  <section class="hero">
+  <div class="hero">
     <h1>SoberHouseManager</h1>
-    <p>From rent collection to resident onboarding, we help you stay organized and focused on recovery — not paperwork.</p>
+    <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
     <button onclick="window.location.href='login.html'">Start Free</button>
-  </section>
-
-  <section class="features">
-    <div class="feature">
-      <h3>Automated Rent Tracking</h3>
-      <p>Set up recurring payments and view real-time payment status for every resident.</p>
-    </div>
-    <div class="feature">
-      <h3>Resident Onboarding</h3>
-      <p>Custom application links for each house — manage approvals with one click.</p>
-    </div>
-    <div class="feature">
-      <h3>Digital Document Upload</h3>
-      <p>Upload and store house rules, agreements, and policies in one secure place.</p>
-    </div>
-    <div class="feature">
-      <h3>Manager Dashboard</h3>
-      <p>Oversee every property from one clean and powerful control center.</p>
-    </div>
-  </section>
-
-  <section class="why-choose">
-    <h2>Why Choose Us</h2>
-    <ul>
-      <li>✔ Built by sober living operators — we understand your needs</li>
-      <li>✔ Clean interface that's easy to use</li>
-      <li>✔ Transparent pricing, no setup fees</li>
-      <li>✔ Real-time data from anywhere</li>
-    </ul>
-  </section>
-
-  <section class="pricing">
-    <h2>Simple Pricing</h2>
-    <div class="plans">
-      <div class="plan">
-        <h4>Flat Rate</h4>
-        <p>$99/month per house</p>
-        <p>No extra fees</p>
-      </div>
-      <div class="plan">
-        <h4>Per Unit</h4>
-        <p>$12/unit/month</p>
-        <p>Great for large homes</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="testimonials">
-    <h2>What Our Managers Say</h2>
-    <div class="testimonial">
-      “SoberHouseManager simplified my entire business. Rent tracking, applications, documents — all in one place.”<br><br>– J. Westrom, TX
-    </div>
-  </section>
-
-  <section class="hero">
-    <h2>Ready to simplify your sober living operation?</h2>
-    <button onclick="window.location.href='login.html'">Create Your Free Account</button>
-  </section>
-
-  <footer>
-    &copy; 2025 SoberHouseManager. All rights reserved. | <a href="privacy.html">Privacy</a>
-  </footer>
+  </div>
 </body>
 </html>
