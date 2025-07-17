@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
   const auth = firebase.auth();
   const db = firebase.firestore();
@@ -15,6 +14,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const housesRef = db.collection("houses").where("managerEmail", "==", managerId);
     const housesSnap = await housesRef.get();
     const houseIds = housesSnap.docs.map(doc => doc.id);
+
+    if (houseIds.length === 0) {
+      appList.innerHTML = "<p>You have no houses linked to your account.</p>";
+      return;
+    }
 
     const appsRef = db.collection("applications").where("houseId", "in", houseIds);
     const appsSnap = await appsRef.get();
@@ -37,16 +41,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const card = document.createElement("div");
       card.classList.add("application-card");
-      card.innerHTML = \`
-        <h3>\${app.fullName}</h3>
-        <p><strong>Email:</strong> \${app.email}</p>
-        <p><strong>Phone:</strong> \${app.phone}</p>
-        <p><strong>Status:</strong> \${statusBadge}</p>
+      card.innerHTML = `
+        <h3>${app.fullName}</h3>
+        <p><strong>Email:</strong> ${app.email}</p>
+        <p><strong>Phone:</strong> ${app.phone}</p>
+        <p><strong>Status:</strong> ${statusBadge}</p>
         <div class="actions">
-          <button class="approve-btn" data-id="\${doc.id}" \${status === "approved" ? "disabled" : ""}>✅ Approve</button>
-          <button class="reject-btn" data-id="\${doc.id}" \${status === "rejected" ? "disabled" : ""}>❌ Reject</button>
+          <button class="approve-btn" data-id="${doc.id}" ${status === "approved" ? "disabled" : ""}>✅ Approve</button>
+          <button class="reject-btn" data-id="${doc.id}" ${status === "rejected" ? "disabled" : ""}>❌ Reject</button>
         </div>
-      \`;
+      `;
       appList.appendChild(card);
     });
 
