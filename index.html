@@ -104,6 +104,11 @@
       color: white;
     }
 
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -137,18 +142,20 @@
     <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
 
     <div class="hero-buttons">
-      <button onclick="location.href='resident-login.html'">👤 Resident Login</button>
-      <button onclick="location.href='manager-login.html'">🛠️ Manager Login</button>
+      <button onclick="location.href='resident-login.html'">Resident Login</button>
+      <button onclick="location.href='manager-login.html'">Manager Login</button>
     </div>
 
     <div class="hero-buttons" style="margin-top: 1.5rem;">
-      <button class="cta" onclick="location.href='manager-signup.html'">➕ Sign Up</button>
+      <button class="cta" onclick="location.href='manager-signup.html'">Sign Up</button>
     </div>
-    <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #444;">
+
+    <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #444; text-align: center;">
       New to SoberHouseManager? Start here.
     </p>
+
     <div style="margin-top: 2rem;">
-      <span style="font-size: 2rem;">⬇️</span>
+      <span style="font-size: 2rem; color: #2e7d7b; animation: bounce 2s infinite;">⬇️</span>
     </div>
   </section>
 
