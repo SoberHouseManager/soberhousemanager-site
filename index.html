@@ -49,6 +49,9 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
+    .hero-buttons.single {
+      flex-direction: column;
+    }
     .hero button {
       background-color: #319795;
       color: white;
@@ -125,9 +128,11 @@
     <h1>Run Your Sober Living Home. Professionally.</h1>
     <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
     <div class="hero-buttons">
-      <button onclick="location.href='features.html'">Learn More</button>
       <button onclick="location.href='resident-login.html'">Resident Login</button>
-      <button onclick="location.href='manager-login.html'">Start Free</button>
+      <button onclick="location.href='manager-login.html'">Manager Login</button>
+    </div>
+    <div class="hero-buttons single" style="margin-top: 1rem;">
+      <button onclick="location.href='manager-signup.html'">Sign Up</button>
     </div>
   </section>
 
