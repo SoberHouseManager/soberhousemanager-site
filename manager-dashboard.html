@@ -54,6 +54,37 @@
     .tab-content.active {
       display: block;
     }
+    .filters {
+      margin-bottom: 1rem;
+    }
+    .filters select,
+    .filters input[type="text"] {
+      padding: 0.5rem;
+      margin-right: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .badge-success { background-color: #38a169; color: white; }
+    .badge-danger { background-color: #e53e3e; color: white; }
+    .badge-warning { background-color: #dd6b20; color: white; }
+    .progress-container {
+      background: #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 10px;
+      margin-top: 4px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #319795;
+    }
     .card {
       background: white;
       padding: 1.5rem;
@@ -94,6 +125,17 @@
 
     <div id="residents-tab" class="tab-content">
       <h2>Residents</h2>
+      <div class="filters">
+        <select id="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="current">Current</option>
+          <option value="pastdue">Past Due</option>
+        </select>
+        <select id="houseFilter">
+          <option value="all">All Houses</option>
+        </select>
+        <input type="text" id="searchResident" placeholder="Search by name">
+      </div>
       <div id="resident-list"></div>
     </div>
 
@@ -111,7 +153,6 @@
       tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
         contents.forEach(c => c.classList.remove('active'));
-
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
       });
