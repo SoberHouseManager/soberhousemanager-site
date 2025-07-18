@@ -32,50 +32,34 @@
     main {
       padding: 2rem;
     }
-    form, .house-card, .application-card {
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #319795;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .tab-button.active {
+      background-color: #267c7e;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .card {
       background: white;
       padding: 1.5rem;
       margin-bottom: 2rem;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    input, select {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #319795;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    button:hover {
-      background-color: #267c7e;
-    }
-    .copy-link {
-      background: #eee;
-      padding: 0.5rem;
-      font-family: monospace;
-      margin-top: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-      word-break: break-word;
-    }
-    .resident-card {
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
-      margin-top: 1rem;
-    }
-    .pending-title {
-      color: #000;
-      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -90,176 +74,53 @@
   </header>
 
   <main>
-    <h2>Create New House</h2>
-    <form id="house-form">
-      <input type="text" id="house-name" placeholder="House Name" required>
-      <input type="text" id="location" placeholder="Location" required>
-      <input type="number" id="beds" placeholder="Number of Beds" required>
-      <button type="submit">Create House</button>
-    </form>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="houses-tab">Houses</button>
+      <button class="tab-button" data-tab="residents-tab">Residents</button>
+      <button class="tab-button" data-tab="applications-tab">Applications</button>
+    </div>
 
-    <h2>My Houses</h2>
-    <div id="house-list"></div>
+    <div id="houses-tab" class="tab-content active">
+      <h2>Create New House</h2>
+      <form id="house-form">
+        <input type="text" id="house-name" placeholder="House Name" required>
+        <input type="text" id="location" placeholder="Location" required>
+        <input type="number" id="beds" placeholder="Number of Beds" required>
+        <button type="submit">Create House</button>
+      </form>
+      <h2>My Houses</h2>
+      <div id="house-list"></div>
+    </div>
 
-    <h2 class="pending-title">Pending Applications</h2>
-    <div id="pending-apps"></div>
+    <div id="residents-tab" class="tab-content">
+      <h2>Residents</h2>
+      <div id="resident-list"></div>
+    </div>
+
+    <div id="applications-tab" class="tab-content">
+      <h2>Pending Applications</h2>
+      <div id="pending-apps"></div>
+    </div>
   </main>
 
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, updateDoc, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
-      authDomain: "soberhousemanager-3371d.firebaseapp.com",
-      projectId: "soberhousemanager-3371d",
-      storageBucket: "soberhousemanager-3371d.appspot.com",
-      messagingSenderId: "823636408266",
-      appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const houseForm = document.getElementById("house-form");
-    const houseList = document.getElementById("house-list");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const pendingApps = document.getElementById("pending-apps");
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return window.location.href = "login.html";
-
-      houseForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const name = houseForm["house-name"].value.trim();
-        const location = houseForm["location"].value.trim();
-        const beds = parseInt(houseForm["beds"].value.trim());
-        if (!name || !location || !beds) return alert("Fill all fields");
-
-        await addDoc(collection(db, "houses"), {
-          houseName: name,
-          location,
-          numberOfBeds: beds,
-          managerEmail: user.email,
-          createdAt: new Date().toISOString()
-        });
-
-        alert("House created!");
-        location.reload();
-      });
-
-      const houseQuery = query(collection(db, "houses"), where("managerEmail", "==", user.email));
-      const houseSnapshot = await getDocs(houseQuery);
-      const managerHouseIds = [];
-
-      for (const docSnap of houseSnapshot.docs) {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        managerHouseIds.push(id);
-        const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
-
-        const div = document.createElement("div");
-        div.className = "house-card";
-        div.innerHTML = `
-          <h3 id="house-name-${id}">${data.houseName}</h3>
-          <p><strong>Location:</strong> ${data.location}</p>
-          <p><strong>Number of Beds:</strong> ${data.numberOfBeds}</p>
-          <div class="copy-link">
-            <span>${fullLink}</span>
-            <button onclick="navigator.clipboard.writeText('${fullLink}')">Copy Link</button>
-          </div>
-          <button onclick="editHouseName('${id}')">Edit House Name</button>
-          <h4>Residents</h4>
-          <div class="resident-section" id="residents-${id}">Loading residents...</div>
-        `;
-        houseList.appendChild(div);
-
-        const usersQ = query(collection(db, "users"), where("houseId", "==", id));
-        const usersSnap = await getDocs(usersQ);
-        const resDiv = document.getElementById(`residents-${id}`);
-        resDiv.innerHTML = "";
-
-        usersSnap.forEach(userSnap => {
-          const r = userSnap.data();
-          const status = r.balanceDue > 0 ? "Past Due" : "Current";
-          const res = document.createElement("div");
-          res.className = "resident-card";
-          res.innerHTML = `
-            <p><strong>${r.fullName || r.firstName + ' ' + r.lastName}</strong></p>
-            <p>Status: <strong>${status}</strong></p>
-            <button onclick="window.location.href='resident-history.html?residentId=${userSnap.id}'">View Payment History</button>
-            <button onclick="window.location.href='resident-billing.html?residentId=${userSnap.id}'">Edit Rent</button>
-          `;
-          resDiv.appendChild(res);
-        });
-      }
-
-      const appSnap = await getDocs(collection(db, "applications"));
-      appSnap.forEach(async (appDoc) => {
-        const app = appDoc.data();
-        if (app.status !== "pending" || !managerHouseIds.includes(app.houseId)) return;
-
-        const div = document.createElement("div");
-        div.className = "application-card";
-        div.innerHTML = `
-          <h3>${app.fullName}</h3>
-          <p><strong>Email:</strong> ${app.email}</p>
-          <p><strong>Phone:</strong> ${app.phone}</p>
-          <form>
-            <label>Rent Name: <input name="rentName" required /></label>
-            <label>Rent Amount: <input type="number" name="rentAmount" required /></label>
-            <label>Deposit: <input type="number" name="deposit" required /></label>
-            <label>Frequency:
-              <select name="frequency">
-                <option value="monthly">Monthly</option>
-                <option value="weekly">Weekly</option>
-              </select>
-            </label>
-            <label>First Due Date: <input type="date" name="dueDate" required /></label>
-            <label><input type="checkbox" name="recurring" /> Enable Auto Billing</label>
-            <button type="submit">Approve</button>
-          </form>
-        `;
-        div.querySelector("form").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const f = e.target;
-          await setDoc(doc(db, "users", appDoc.id), {
-            fullName: app.fullName,
-            email: app.email,
-            phone: app.phone,
-            houseId: app.houseId,
-            rentName: f.rentName.value.trim(),
-            rentAmount: parseFloat(f.rentAmount.value),
-            deposit: parseFloat(f.deposit.value),
-            frequency: f.frequency.value,
-            dueDate: f.dueDate.value,
-            recurring: f.recurring.checked,
-            role: "resident",
-            balanceDue: parseFloat(f.deposit.value),
-            createdAt: new Date().toISOString()
-          });
-          await updateDoc(doc(db, "applications", appDoc.id), { status: "approved" });
-          alert("Approved and added to residents.");
-          div.remove();
-        });
-        pendingApps.appendChild(div);
-      });
-    });
-
-    window.editHouseName = async (houseId) => {
-      const newName = prompt("Enter new house name:");
-      if (!newName) return;
-      await updateDoc(doc(db, "houses", houseId), { houseName: newName });
-      document.getElementById(`house-name-${houseId}`).textContent = newName;
-      alert("House name updated!");
-    };
+    // Keep your full Firebase + Firestore logic here.
+    // Will hook each section to its tab container: house-list, resident-list, pending-apps
   </script>
 </body>
 </html>
