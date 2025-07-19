@@ -1,54 +1,164 @@
-
+/* === GLOBAL RESET & LAYOUT === */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f5f5f5;
+  color: #1a202c;
   margin: 0;
   padding: 0;
-  color: #222;
 }
 
-header, .top-bar {
-  background-color: #2e7d7b;
-  color: white;
+header {
+  background: #319795;
   padding: 1rem;
-  text-align: center;
-  font-size: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-button, .login-button, .hero button {
-  background-color: #2e7d7b;
+header h1 {
+  color: white;
+  margin: 0;
+}
+
+nav a {
+  margin-left: 1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  padding: 2rem;
+}
+
+/* === TABS === */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background-color: #319795;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.tab-button.active {
+  background-color: #267c7e;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* === FORMS === */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* === BUTTONS === */
+button {
+  background-color: #319795;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  margin: 0.5rem;
-  font-size: 1rem;
-  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s ease-in-out;
 }
 
-button:hover, .login-button:hover, .hero button:hover {
-  background-color: #256b66;
+button:hover {
+  background-color: #267c7e;
 }
 
-.container, .section {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
+/* === CARDS === */
+.card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
-h1, h2 {
-  color: #2e7d7b;
+/* === COPY LINK BOX === */
+.copy-link {
+  background: #eee;
+  padding: 0.5rem;
+  font-family: monospace;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  word-break: break-word;
 }
 
-a {
-  color: #2e7d7b;
-  text-decoration: none;
+/* === BADGES === */
+.badge {
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
 }
 
-a:hover {
-  text-decoration: underline;
+.badge-success {
+  background-color: #38a169;
+  color: white;
+}
+
+.badge-danger {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #dd6b20;
+  color: white;
+}
+
+/* === FILTER BAR === */
+.filters {
+  margin-bottom: 1.5rem;
+}
+
+.filters select,
+.filters input[type="text"] {
+  padding: 0.5rem;
+  margin-right: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+/* === PROGRESS BAR FOR OCCUPANCY === */
+.progress-container {
+  background: #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 10px;
+  margin: 4px 0 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #319795;
+  transition: width 0.3s ease-in-out;
 }
