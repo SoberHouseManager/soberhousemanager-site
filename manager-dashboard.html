@@ -6,32 +6,6 @@
   <title>Manager Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #319795;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      color: white;
-      margin: 0;
-    }
-    nav a {
-      margin-left: 1rem;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    main {
-      padding: 2rem;
-    }
     .tabs {
       display: flex;
       gap: 1rem;
@@ -44,6 +18,7 @@
       color: white;
       cursor: pointer;
       border-radius: 5px;
+      font-size: 1rem;
     }
     .tab-button.active {
       background-color: #267c7e;
@@ -54,6 +29,21 @@
     .tab-content.active {
       display: block;
     }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-danger { background-color: #e53e3e; color: white; }
+    .badge-warning { background-color: #f6e05e; color: black; }
+    .house-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
     .filters {
       margin-bottom: 1rem;
     }
@@ -63,34 +53,6 @@
       margin-right: 1rem;
       border-radius: 5px;
       border: 1px solid #ccc;
-    }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .badge-success { background-color: #38a169; color: white; }
-    .badge-danger { background-color: #e53e3e; color: white; }
-    .badge-warning { background-color: #dd6b20; color: white; }
-    .progress-container {
-      background: #e2e8f0;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 10px;
-      margin-top: 4px;
-    }
-    .progress-bar {
-      height: 100%;
-      background: #319795;
-    }
-    .card {
-      background: white;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
   </style>
 </head>
@@ -112,15 +74,17 @@
     </div>
 
     <div id="houses-tab" class="tab-content active">
-      <h2>Create New House</h2>
-      <form id="house-form">
-        <input type="text" id="house-name" placeholder="House Name" required>
-        <input type="text" id="location" placeholder="Location" required>
-        <input type="number" id="beds" placeholder="Number of Beds" required>
-        <button type="submit">Create House</button>
-      </form>
-      <h2>My Houses</h2>
-      <div id="house-list"></div>
+      <h2>Houses</h2>
+      <button id="toggleHouseForm">+ Create New House</button>
+      <div id="house-form-container" style="display: none; margin-top: 1rem;">
+        <form id="house-form">
+          <input type="text" id="house-name" placeholder="House Name" required>
+          <input type="text" id="location" placeholder="Location" required>
+          <input type="number" id="beds" placeholder="Number of Beds" required>
+          <button type="submit">Create House</button>
+        </form>
+      </div>
+      <div id="house-list" class="house-grid"></div>
     </div>
 
     <div id="residents-tab" class="tab-content">
@@ -148,15 +112,28 @@
   <script>
     const tabs = document.querySelectorAll('.tab-button');
     const contents = document.querySelectorAll('.tab-content');
+    const toggleHouseFormBtn = document.getElementById("toggleHouseForm");
+    const houseFormContainer = document.getElementById("house-form-container");
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
         contents.forEach(c => c.classList.remove('active'));
+
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
       });
     });
+
+    toggleHouseFormBtn.addEventListener("click", () => {
+      houseFormContainer.style.display = houseFormContainer.style.display === "none" ? "block" : "none";
+    });
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Application link copied to clipboard!");
+      });
+    }
   </script>
 
   <script type="module" src="manager-dashboard.js"></script>
