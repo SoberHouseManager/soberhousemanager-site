@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       await addDoc(collection(db, "applications"), {
+        fullName,
         firstName,
         lastName,
         email,
