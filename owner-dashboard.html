@@ -4,6 +4,43 @@
   <meta charset="UTF-8" />
   <title>Owner Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #319795;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .tab-button.active { background-color: #267c7e; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-danger { background-color: #e53e3e; color: white; }
+    .badge-warning { background-color: #f6e05e; color: black; }
+    .badge-success { background-color: #48bb78; color: white; }
+    .house-grid, #resident-list, #pending-apps, #manager-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card-buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -48,7 +85,7 @@
           <button type="submit">Invite Manager</button>
         </form>
       </div>
-      <div id="manager-list"></div>
+      <div id="manager-list" class="house-grid"></div>
     </div>
 
     <div id="residents-tab" class="tab-content">
@@ -66,6 +103,32 @@
       <p>Coming soon: Export resident billing, occupancy, and late payment reports.</p>
     </div>
   </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+    const toggleHouseFormBtn = document.getElementById("toggleHouseForm");
+    const toggleManagerFormBtn = document.getElementById("toggleManagerForm");
+    const houseFormContainer = document.getElementById("house-form-container");
+    const managerFormContainer = document.getElementById("manager-form-container");
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    toggleHouseFormBtn?.addEventListener("click", () => {
+      houseFormContainer.style.display = houseFormContainer.style.display === "none" ? "block" : "none";
+    });
+
+    toggleManagerFormBtn?.addEventListener("click", () => {
+      managerFormContainer.style.display = managerFormContainer.style.display === "none" ? "block" : "none";
+    });
+  </script>
 
   <script type="module" src="owner-dashboard.js"></script>
 </body>
