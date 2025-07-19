@@ -57,8 +57,10 @@ async function loadApplications() {
       <p>Phone: ${app.phone}</p>
       <p>Reason: ${app.whyJoin || "N/A"}</p>
       <p>House ID: ${app.houseId}</p>
-      <button onclick="openApprovalForm('${docSnap.id}', '${app.email}', '${app.houseId}')">Approve</button>
-      <button onclick="rejectApplication('${docSnap.id}')">Reject</button>
+      <div style="display: flex; gap: 10px; margin-top: 1rem;">
+<button class="btn-approve" onclick="openApprovalForm('${docSnap.id}', '${app.email}', '${app.houseId}')">Approve</button>
+<button class="btn-reject" onclick="rejectApplication('${docSnap.id}')">Reject</button>
+</div>
     `;
     container.appendChild(div);
   });
