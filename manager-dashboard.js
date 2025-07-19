@@ -1,3 +1,4 @@
+
 // manager-dashboard.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -38,6 +39,18 @@ onAuthStateChanged(auth, async (user) => {
   const managerHouseIds = [];
   const houseMap = {};
   const residentData = [];
+  const applicationCounts = {};
+
+  const appSnap = await getDocs(collection(db, "applications"));
+  appSnap.forEach(appDoc => {
+    const app = appDoc.data();
+    if (app.status === "pending" && app.houseId) {
+      if (!applicationCounts[app.houseId]) {
+        applicationCounts[app.houseId] = 0;
+      }
+      applicationCounts[app.houseId]++;
+    }
+  });
 
   for (const docSnap of houseSnapshot.docs) {
     const data = docSnap.data();
@@ -56,9 +69,11 @@ onAuthStateChanged(auth, async (user) => {
       residentData.push({ ...rData, id: rSnap.id });
     });
 
-    const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
+    const pendingCount = applicationCounts[id] || 0;
     const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : 'badge-success';
+    const pendingBadge = pendingCount > 0 ? `<span class="badge badge-warning">${pendingCount} Pending</span>` : `<span class="badge badge-success">0 Pending</span>`;
 
+    const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
@@ -66,7 +81,7 @@ onAuthStateChanged(auth, async (user) => {
       <p><strong>Location:</strong> ${data.location}</p>
       <p><strong>Beds:</strong> ${data.numberOfBeds}</p>
       <p><strong>Residents:</strong> ${totalResidents}</p>
-      <p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>
+      <p><span class="badge ${badge}">${pastDueCount} Past Due</span> ${pendingBadge}</p>
       <div class="card-buttons">
         <button onclick="filterResidentsByHouse('${id}')">View Residents</button>
         <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
@@ -128,9 +143,7 @@ onAuthStateChanged(auth, async (user) => {
     alert("Edit House coming soon! (Feature placeholder)");
   };
 
-  const appSnap = await getDocs(collection(db, "applications"));
   pendingApps.innerHTML = "";
-
   appSnap.forEach(appDoc => {
     const app = appDoc.data();
     if (app.status !== "pending" || !managerHouseIds.includes(app.houseId)) return;
@@ -142,44 +155,39 @@ onAuthStateChanged(auth, async (user) => {
       <p>Email: ${app.email}</p>
       <p>Phone: ${app.phone}</p>
       <p>House: ${houseMap[app.houseId] || "N/A"}</p>
-      <span class="badge badge-warning">PENDING</span>
-      <form>
-        <input name="rentName" placeholder="Rent Name" required />
-        <input name="rentAmount" type="number" placeholder="Amount" required />
-        <input name="deposit" type="number" placeholder="Deposit" required />
-        <select name="frequency">
-          <option value="monthly">Monthly</option>
-          <option value="weekly">Weekly</option>
-        </select>
-        <input name="dueDate" type="date" required />
-        <label><input type="checkbox" name="recurring" /> Auto Billing</label>
-        <button type="submit">Approve</button>
-      </form>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-approve" onclick="approveApplication('${appDoc.id}')">Approve</button>
+        <button class="btn-reject" onclick="rejectApplication('${appDoc.id}')">Reject</button>
+      </div>
     `;
-    div.querySelector("form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const f = e.target;
-      await setDoc(doc(db, "users", appDoc.id), {
-        fullName: app.fullName,
-        email: app.email,
-        phone: app.phone,
-        houseId: app.houseId,
-        rentName: f.rentName.value.trim(),
-        rentAmount: parseFloat(f.rentAmount.value),
-        deposit: parseFloat(f.deposit.value),
-        frequency: f.frequency.value,
-        dueDate: f.dueDate.value,
-        recurring: f.recurring.checked,
-        role: "resident",
-        balanceDue: parseFloat(f.deposit.value),
-        createdAt: new Date().toISOString(),
-      });
-      await updateDoc(doc(db, "applications", appDoc.id), { status: "approved" });
-      alert("Approved and added to residents.");
-      div.remove();
-    });
     pendingApps.appendChild(div);
   });
+
+  window.approveApplication = async function (appId) {
+    const appDoc = await getDocs(query(collection(db, "applications"), where("__name__", "==", appId)));
+    const app = appDoc.docs[0]?.data();
+    if (!app) return alert("Application not found.");
+
+    const userId = app.email.replace(/[^a-zA-Z0-9]/g, "_");
+    await setDoc(doc(db, "users", userId), {
+      fullName: app.fullName,
+      email: app.email,
+      phone: app.phone,
+      houseId: app.houseId,
+      role: "resident",
+      balanceDue: 0,
+      createdAt: new Date().toISOString(),
+    });
+    await updateDoc(doc(db, "applications", appId), { status: "approved" });
+    alert("Approved and added as a resident.");
+    location.reload();
+  };
+
+  window.rejectApplication = async function (appId) {
+    await updateDoc(doc(db, "applications", appId), { status: "rejected" });
+    alert("Application rejected.");
+    location.reload();
+  };
 
   if (houseForm) {
     houseForm.addEventListener("submit", async (e) => {
