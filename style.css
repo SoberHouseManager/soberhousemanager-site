@@ -162,3 +162,38 @@ button:hover {
   background-color: #319795;
   transition: width 0.3s ease-in-out;
 }
+
+/* === NEWLY ADDED BUTTON + FORM STYLES === */
+.btn-approve {
+  background-color: #319795;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-reject {
+  background-color: #e53e3e;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-approve:hover {
+  background-color: #267c7e;
+}
+
+.btn-reject:hover {
+  background-color: #c53030;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
