@@ -1,7 +1,7 @@
 // manager-dashboard.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
@@ -57,7 +57,7 @@ onAuthStateChanged(auth, async (user) => {
     });
 
     const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
-    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : 'badge-success';
+    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : '';
 
     const div = document.createElement("div");
     div.className = "card";
@@ -66,19 +66,22 @@ onAuthStateChanged(auth, async (user) => {
       <p><strong>Location:</strong> ${data.location}</p>
       <p><strong>Beds:</strong> ${data.numberOfBeds}</p>
       <p><strong>Residents:</strong> ${totalResidents}</p>
-      <p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>
-      <button onclick="filterResidentsByHouse('${id}')">View Residents</button>
-      <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
-      <button onclick="editHouse('${id}', '${data.houseName}', ${data.numberOfBeds})">Edit House</button>
+      ${pastDueCount ? `<p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>` : ""}
+      <div class="card-buttons">
+        <button onclick="filterResidentsByHouse('${id}')">View Residents</button>
+        <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
+        <button onclick="editHouse('${id}')">Edit House</button>
+      </div>
     `;
     houseList.appendChild(div);
   }
 
+  // Populate house dropdown filter
   if (houseFilter) {
     houseFilter.innerHTML += managerHouseIds.map(id => `<option value="${id}">${houseMap[id]}</option>`).join("");
   }
 
-  function renderResidents() {
+  function renderResidents(filter = {}) {
     residentList.innerHTML = "";
     const statusVal = statusFilter?.value || "all";
     const houseVal = houseFilter?.value || "all";
@@ -106,6 +109,7 @@ onAuthStateChanged(auth, async (user) => {
     });
   }
 
+  // Event Listeners
   if (statusFilter) statusFilter.addEventListener("change", renderResidents);
   if (houseFilter) houseFilter.addEventListener("change", renderResidents);
   if (searchInput) searchInput.addEventListener("input", renderResidents);
@@ -117,20 +121,14 @@ onAuthStateChanged(auth, async (user) => {
   };
 
   window.copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => alert("Application link copied to clipboard!"));
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Application link copied to clipboard!");
+    });
   };
 
-  window.editHouse = async (houseId, currentName, currentBeds) => {
-    const newName = prompt("Update house name:", currentName);
-    const newBeds = prompt("Update number of beds:", currentBeds);
-    if (newName && newBeds) {
-      await updateDoc(doc(db, "houses", houseId), {
-        houseName: newName.trim(),
-        numberOfBeds: parseInt(newBeds.trim())
-      });
-      alert("House updated.");
-      location.reload();
-    }
+  window.editHouse = (houseId) => {
+    alert("Edit House coming soon! (Feature placeholder)");
+    // In the future, we could show a modal or open an edit form
   };
 
   const appSnap = await getDocs(collection(db, "applications"));
@@ -157,9 +155,8 @@ onAuthStateChanged(auth, async (user) => {
           <option value="weekly">Weekly</option>
         </select>
         <input name="dueDate" type="date" required />
-        <label><input type="checkbox" name="recurring" disabled ${app.recurring ? 'checked' : ''}/> Auto Billing</label>
+        <label><input type="checkbox" name="recurring" /> Auto Billing</label>
         <button type="submit">Approve</button>
-        <button type="button" onclick="rejectApplication('${appDoc.id}')">Reject</button>
       </form>
     `;
     div.querySelector("form").addEventListener("submit", async (e) => {
@@ -175,7 +172,7 @@ onAuthStateChanged(auth, async (user) => {
         deposit: parseFloat(f.deposit.value),
         frequency: f.frequency.value,
         dueDate: f.dueDate.value,
-        recurring: app.recurring || false,
+        recurring: f.recurring.checked,
         role: "resident",
         balanceDue: parseFloat(f.deposit.value),
         createdAt: new Date().toISOString(),
@@ -186,12 +183,6 @@ onAuthStateChanged(auth, async (user) => {
     });
     pendingApps.appendChild(div);
   });
-
-  window.rejectApplication = async (appId) => {
-    await updateDoc(doc(db, "applications", appId), { status: "rejected" });
-    alert("Application rejected.");
-    location.reload();
-  };
 
   if (houseForm) {
     houseForm.addEventListener("submit", async (e) => {
