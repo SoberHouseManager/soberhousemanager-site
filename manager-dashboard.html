@@ -1,52 +1,153 @@
+<!-- manager-dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manager Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #319795;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .tab-button.active {
+      background-color: #267c7e;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-danger { background-color: #e53e3e; color: white; }
+    .badge-warning { background-color: #f6e05e; color: black; }
+    .badge-success { background-color: #48bb78; color: white; }
+    .house-grid, #resident-list, #pending-apps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .filters {
+      margin-bottom: 1rem;
+    }
+    .filters select,
+    .filters input[type="text"] {
+      padding: 0.5rem;
+      margin-right: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .card-buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Houses</h1>
+    <h1>SoberHouseManager</h1>
     <nav>
-      <button id="tab-houses">Houses</button>
-      <button id="tab-residents">Residents</button>
-      <button id="tab-applications">Applications</button>
+      <a href="manager-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
     </nav>
   </header>
 
   <main>
-    <section id="houses-section" class="tab-section">
-      <button class="create-button" onclick="openCreateHouseModal()">+ Create New House</button>
-      <div id="house-cards" class="card-grid"></div>
-    </section>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="houses-tab">Houses</button>
+      <button class="tab-button" data-tab="residents-tab">Residents</button>
+      <button class="tab-button" data-tab="applications-tab">Applications</button>
+    </div>
 
-    <section id="residents-section" class="tab-section hidden">
+    <div id="houses-tab" class="tab-content active">
+      <h2>Houses</h2>
+      <button id="toggleHouseForm">+ Create New House</button>
+      <div id="house-form-container" style="display: none; margin-top: 1rem;">
+        <form id="house-form">
+          <input type="text" id="house-name" placeholder="House Name" required>
+          <input type="text" id="location" placeholder="Location" required>
+          <input type="number" id="beds" placeholder="Number of Beds" required>
+          <button type="submit">Create House</button>
+        </form>
+      </div>
+      <div id="house-list" class="house-grid"></div>
+    </div>
+
+    <div id="residents-tab" class="tab-content">
       <h2>Residents</h2>
       <div class="filters">
-        <select id="resident-status-filter">
+        <select id="statusFilter">
           <option value="all">All Payment Status</option>
           <option value="current">Current</option>
-          <option value="past_due">Past Due</option>
+          <option value="pastdue">Past Due</option>
         </select>
-        <select id="resident-house-filter"></select>
-        <input type="text" id="resident-search" placeholder="Search by name" />
+        <select id="houseFilter">
+          <option value="all">All Houses</option>
+        </select>
+        <input type="text" id="searchResident" placeholder="Search by name">
       </div>
-      <div id="resident-cards" class="card-grid"></div>
-    </section>
+      <div id="resident-list"></div>
+    </div>
 
-    <section id="applications-section" class="tab-section hidden">
+    <div id="applications-tab" class="tab-content">
       <h2>Pending Applications</h2>
       <div class="filters">
-        <select id="application-house-filter"></select>
+        <select id="appHouseFilter">
+          <option value="all">All Houses</option>
+        </select>
       </div>
-      <div id="application-cards" class="card-grid"></div>
-    </section>
+      <div id="pending-apps"></div>
+    </div>
   </main>
 
-  <!-- Modals can be placed here -->
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+    const toggleHouseFormBtn = document.getElementById("toggleHouseForm");
+    const houseFormContainer = document.getElementById("house-form-container");
 
-  <script src="manager-dashboard.js"></script>
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    toggleHouseFormBtn.addEventListener("click", () => {
+      houseFormContainer.style.display = houseFormContainer.style.display === "none" ? "block" : "none";
+    });
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Application link copied to clipboard!");
+      });
+    }
+  </script>
+
+  <script type="module" src="manager-dashboard.js"></script>
 </body>
 </html>
