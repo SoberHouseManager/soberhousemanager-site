@@ -82,7 +82,7 @@
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        document.getElementById("name").textContent = data.fullName || "N/A";
+        document.getElementById("name").textContent = data.fullName || data.firstName + " " + (data.lastName || "") || "Resident";
         document.getElementById("email").textContent = residentEmail;
         document.getElementById("phone").textContent = data.phone || "N/A";
         document.getElementById("house").textContent = data.houseName || houseId;
