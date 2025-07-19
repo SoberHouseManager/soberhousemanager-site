@@ -21,6 +21,9 @@ const residentList = document.getElementById("resident-list");
 const pendingApps = document.getElementById("pending-apps");
 const logoutBtn = document.getElementById("logoutBtn");
 const houseForm = document.getElementById("house-form");
+const houseFilter = document.getElementById("houseFilter");
+const statusFilter = document.getElementById("statusFilter");
+const searchInput = document.getElementById("searchResident");
 
 logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
@@ -34,6 +37,7 @@ onAuthStateChanged(auth, async (user) => {
   const houseSnapshot = await getDocs(houseQuery);
   const managerHouseIds = [];
   const houseMap = {};
+  const residentData = [];
 
   for (const docSnap of houseSnapshot.docs) {
     const data = docSnap.data();
@@ -41,43 +45,46 @@ onAuthStateChanged(auth, async (user) => {
     houseMap[id] = data.houseName;
     managerHouseIds.push(id);
 
-    const residentsQ = query(collection(db, "users"), where("houseId", "==", id));
-    const resSnap = await getDocs(residentsQ);
-    const filledBeds = resSnap.docs.length;
-    const capacity = data.numberOfBeds;
-    const percent = Math.min(100, Math.round((filledBeds / capacity) * 100));
+    const resSnap = await getDocs(query(collection(db, "users"), where("houseId", "==", id)));
+    let pastDueCount = 0;
+    let totalResidents = 0;
+
+    resSnap.forEach(rSnap => {
+      const rData = rSnap.data();
+      totalResidents++;
+      if (rData.balanceDue > 0) pastDueCount++;
+      residentData.push({ ...rData, id: rSnap.id });
+    });
 
     const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
+    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : '';
+
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
       <h3>${data.houseName}</h3>
       <p><strong>Location:</strong> ${data.location}</p>
-      <p><strong>Beds:</strong> ${filledBeds}/${capacity}</p>
-      <div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>
-      <p><strong>Application Link:</strong> <input type="text" value="${fullLink}" readonly onclick="this.select()" /></p>
+      <p><strong>Beds:</strong> ${data.numberOfBeds}</p>
+      <p><strong>Residents:</strong> ${totalResidents}</p>
+      ${pastDueCount ? `<p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>` : ""}
+      <button onclick="filterResidentsByHouse('${id}')">View Residents</button>
+      <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
     `;
     houseList.appendChild(div);
   }
 
-  const usersQ = query(collection(db, "users"), where("houseId", "in", managerHouseIds));
-  const usersSnap = await getDocs(usersQ);
+  // Populate house dropdown filter
+  if (houseFilter) {
+    houseFilter.innerHTML += managerHouseIds.map(id => `<option value="${id}">${houseMap[id]}</option>`).join("");
+  }
 
-  const houseFilter = document.getElementById("houseFilter");
-  const statusFilter = document.getElementById("statusFilter");
-  const searchInput = document.getElementById("searchResident");
-
-  // Populate house filter dropdown
-  houseFilter.innerHTML += managerHouseIds.map(id => `<option value="${id}">${houseMap[id]}</option>`).join("");
-
-  const renderResidents = () => {
+  function renderResidents(filter = {}) {
     residentList.innerHTML = "";
-    const statusVal = statusFilter.value;
-    const houseVal = houseFilter.value;
-    const searchVal = searchInput.value.toLowerCase();
+    const statusVal = statusFilter?.value || "all";
+    const houseVal = houseFilter?.value || "all";
+    const searchVal = searchInput?.value?.toLowerCase() || "";
 
-    usersSnap.forEach(userSnap => {
-      const r = userSnap.data();
+    residentData.forEach(r => {
       const fullName = r.fullName || "Unnamed";
       const isPastDue = r.balanceDue > 0;
       const matchesStatus = statusVal === "all" || (isPastDue ? statusVal === "pastdue" : statusVal === "current");
@@ -85,27 +92,30 @@ onAuthStateChanged(auth, async (user) => {
       const matchesSearch = fullName.toLowerCase().includes(searchVal);
       if (!(matchesStatus && matchesHouse && matchesSearch)) return;
 
-      const status = isPastDue ? "Past Due" : "Current";
       const badgeColor = isPastDue ? "badge-danger" : "badge-success";
-
       const div = document.createElement("div");
       div.className = "card";
       div.innerHTML = `
-        <p><strong>${fullName}</strong> <span class="badge ${badgeColor}">${status}</span></p>
+        <p><strong>${fullName}</strong> <span class="badge ${badgeColor}">${isPastDue ? "Past Due" : "Current"}</span></p>
         <p>House: ${houseMap[r.houseId] || "N/A"}</p>
         <p>Email: ${r.email}</p>
         <p>Phone: ${r.phone}</p>
-        <button onclick="window.location.href='resident-details.html?residentId=${userSnap.id}'">Details</button>
+        <button onclick="window.location.href='resident-details.html?residentId=${r.id}'">Details</button>
       `;
       residentList.appendChild(div);
     });
+  }
+
+  // Event Listeners
+  if (statusFilter) statusFilter.addEventListener("change", renderResidents);
+  if (houseFilter) houseFilter.addEventListener("change", renderResidents);
+  if (searchInput) searchInput.addEventListener("input", renderResidents);
+
+  window.filterResidentsByHouse = (houseId) => {
+    document.querySelector('[data-tab="residents-tab"]').click();
+    if (houseFilter) houseFilter.value = houseId;
+    renderResidents();
   };
-
-  statusFilter.addEventListener("change", renderResidents);
-  houseFilter.addEventListener("change", renderResidents);
-  searchInput.addEventListener("input", renderResidents);
-
-  renderResidents();
 
   const appSnap = await getDocs(collection(db, "applications"));
   pendingApps.innerHTML = "";
