@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Owner Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>SoberHouseManager - Owner Portal</h1>
+    <nav>
+      <a href="owner-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="houses-tab">Houses</button>
+      <button class="tab-button" data-tab="managers-tab">Managers</button>
+      <button class="tab-button" data-tab="residents-tab">Residents</button>
+      <button class="tab-button" data-tab="applications-tab">Applications</button>
+      <button class="tab-button" data-tab="reports-tab">Reports</button>
+    </div>
+
+    <div id="houses-tab" class="tab-content active">
+      <h2>Houses</h2>
+      <button id="toggleHouseForm">+ Create New House</button>
+      <div id="house-form-container" style="display: none; margin-top: 1rem;">
+        <form id="house-form">
+          <input type="text" id="house-name" placeholder="House Name" required>
+          <input type="text" id="location" placeholder="Location" required>
+          <input type="number" id="beds" placeholder="Number of Beds" required>
+          <button type="submit">Create House</button>
+        </form>
+      </div>
+      <div id="house-list" class="house-grid"></div>
+    </div>
+
+    <div id="managers-tab" class="tab-content">
+      <h2>Managers</h2>
+      <button id="toggleManagerForm">+ Add New Manager</button>
+      <div id="manager-form-container" style="display: none; margin-top: 1rem;">
+        <form id="manager-form">
+          <input type="text" id="manager-name" placeholder="Manager Name" required>
+          <input type="email" id="manager-email" placeholder="Manager Email" required>
+          <button type="submit">Invite Manager</button>
+        </form>
+      </div>
+      <div id="manager-list"></div>
+    </div>
+
+    <div id="residents-tab" class="tab-content">
+      <h2>Residents</h2>
+      <div id="resident-list"></div>
+    </div>
+
+    <div id="applications-tab" class="tab-content">
+      <h2>Pending Applications</h2>
+      <div id="pending-apps"></div>
+    </div>
+
+    <div id="reports-tab" class="tab-content">
+      <h2>Reports</h2>
+      <p>Coming soon: Export resident billing, occupancy, and late payment reports.</p>
+    </div>
+  </main>
+
+  <script type="module" src="owner-dashboard.js"></script>
+</body>
+</html>
