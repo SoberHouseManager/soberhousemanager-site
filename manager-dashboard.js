@@ -57,7 +57,7 @@ onAuthStateChanged(auth, async (user) => {
     });
 
     const fullLink = `${window.location.origin}/apply.html?houseId=${id}`;
-    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : '';
+    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : 'badge-success';
 
     const div = document.createElement("div");
     div.className = "card";
@@ -66,7 +66,7 @@ onAuthStateChanged(auth, async (user) => {
       <p><strong>Location:</strong> ${data.location}</p>
       <p><strong>Beds:</strong> ${data.numberOfBeds}</p>
       <p><strong>Residents:</strong> ${totalResidents}</p>
-      ${pastDueCount ? `<p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>` : ""}
+      <p><span class="badge ${badge}">${pastDueCount} Past Due</span></p>
       <div class="card-buttons">
         <button onclick="filterResidentsByHouse('${id}')">View Residents</button>
         <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
@@ -76,12 +76,11 @@ onAuthStateChanged(auth, async (user) => {
     houseList.appendChild(div);
   }
 
-  // Populate house dropdown filter
   if (houseFilter) {
     houseFilter.innerHTML += managerHouseIds.map(id => `<option value="${id}">${houseMap[id]}</option>`).join("");
   }
 
-  function renderResidents(filter = {}) {
+  function renderResidents() {
     residentList.innerHTML = "";
     const statusVal = statusFilter?.value || "all";
     const houseVal = houseFilter?.value || "all";
@@ -109,7 +108,6 @@ onAuthStateChanged(auth, async (user) => {
     });
   }
 
-  // Event Listeners
   if (statusFilter) statusFilter.addEventListener("change", renderResidents);
   if (houseFilter) houseFilter.addEventListener("change", renderResidents);
   if (searchInput) searchInput.addEventListener("input", renderResidents);
@@ -128,7 +126,6 @@ onAuthStateChanged(auth, async (user) => {
 
   window.editHouse = (houseId) => {
     alert("Edit House coming soon! (Feature placeholder)");
-    // In the future, we could show a modal or open an edit form
   };
 
   const appSnap = await getDocs(collection(db, "applications"));
