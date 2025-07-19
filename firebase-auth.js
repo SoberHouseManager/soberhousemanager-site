@@ -2,12 +2,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import {
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import {
   getFirestore,
   doc,
-  setDoc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -24,7 +22,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Handle login
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -34,41 +31,26 @@ if (loginForm) {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      const isManager = email.includes("manager");
-      window.location.href = isManager ? "manager-dashboard.html" : "resident-dashboard.html";
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data();
+
+      if (!userData?.role) {
+        document.getElementById("login-message").textContent = "No role found for user.";
+        return;
+      }
+
+      if (userData.role === "owner") {
+        window.location.href = "owner-dashboard.html";
+      } else if (userData.role === "manager") {
+        window.location.href = "manager-dashboard.html";
+      } else if (userData.role === "resident") {
+        window.location.href = "resident-dashboard.html";
+      } else {
+        document.getElementById("login-message").textContent = "Unrecognized user role.";
+      }
     } catch (err) {
       document.getElementById("login-message").textContent = "Login failed: " + err.message;
     }
   });
 }
-
-// TEST USER CREATION – Only run once
-async function setupTestAccounts() {
-  const testAccounts = [
-    { email: "test.manager@soberhouse.com", password: "Test1234!", role: "manager" },
-    { email: "test.resident@soberhouse.com", password: "Test1234!", role: "resident" }
-  ];
-
-  for (let user of testAccounts) {
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, user.email, user.password);
-      await setDoc(doc(db, "users", userCred.user.uid), {
-        email: user.email,
-        role: user.role,
-        houseId: "test-house-001"
-      });
-    } catch (err) {
-      if (!err.message.includes("already-in-use")) {
-        console.warn("Test account error:", err.message);
-      }
-    }
-  }
-
-  await setDoc(doc(db, "houses", "test-house-001"), {
-    name: "Test House",
-    managerEmail: "test.manager@soberhouse.com",
-    residents: ["test.resident@soberhouse.com"]
-  });
-}
-// Uncomment below to run test account setup once:
-// setupTestAccounts();
