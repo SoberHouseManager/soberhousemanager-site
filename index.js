@@ -6,6 +6,7 @@ const admin = require('firebase-admin');
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const bodyParser = require('body-parser'); // Added for webhook raw body parsing
 
 console.log("✅ Deploy trigger – index.js updated");
 
@@ -14,20 +15,24 @@ const db = admin.firestore();
 
 const app = express();
 app.use(cors({ origin: true }));
-app.use(express.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  }
-}));
 
-// Webhook Endpoint
-app.post('/webhook', async (req, res) => {
+// Apply express.json() only to non-webhook routes
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
+// Webhook Endpoint with raw body parser
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error('⚠️ Webhook signature verification failed.', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -54,7 +59,6 @@ app.post('/webhook', async (req, res) => {
         const paidDate = new Date();
         const type = data.metadata?.type || 'rent';
 
-        // Find resident by stripeCustomerId in global collection
         const residentSnapshot = await db.collection('residents')
           .where('stripeCustomerId', '==', stripeCustomerId)
           .limit(1)
@@ -66,7 +70,6 @@ app.post('/webhook', async (req, res) => {
           const residentData = residentDoc.data();
           const houseId = residentData.houseId;
 
-          // Write payment to resident's subcollection in house doc
           await db.collection('houses').doc(houseId)
             .collection('residents').doc(residentId)
             .collection('paymentHistory').add({
@@ -76,9 +79,8 @@ app.post('/webhook', async (req, res) => {
               paidDate
             });
 
-          // Update pastDue and nextDueDate
           const nextDue = new Date();
-          nextDue.setMonth(nextDue.getMonth() + 1); // You can adjust this logic
+          nextDue.setMonth(nextDue.getMonth() + 1);
 
           await db.collection('houses').doc(houseId)
             .collection('residents').doc(residentId)
@@ -87,7 +89,6 @@ app.post('/webhook', async (req, res) => {
               nextDueDate: nextDue.toISOString()
             });
 
-          // Mirror to global collection
           await db.collection('residents').doc(residentId).update({
             pastDue: false,
             nextDueDate: nextDue.toISOString()
@@ -126,7 +127,7 @@ app.post('/webhook', async (req, res) => {
 });
 
 // Payment Intent Endpoint (existing)
-app.post('/create-payment-intent', async (req, res) => {
+app.post('/create-payment-intent', express.json(), async (req, res) => {
   try {
     const { amount, currency = 'usd', metadata } = req.body;
 
