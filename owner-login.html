@@ -3,42 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Owner Login - SoberHouseManager</title>
+  <title>Owner Login – SoberHouseManager</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- INLINE styling to match your other login pages -->
+  <style>
+    body {
+      background: #f0fdfd;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+    }
+    .card {
+      max-width: 400px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h1 { color: #2e7d7b; margin-bottom: 1rem; }
+    .card form { display: flex; flex-direction: column; gap: 1rem; }
+    .card label { text-align: left; font-weight: 500; }
+    .card input {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .card button {
+      background: #319795;
+      color: #fff;
+      border: none;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .card button:hover { background: #247c7a; }
+    .card a { color: #319795; text-decoration: none; }
+    .card a:hover { text-decoration: underline; }
+    .back-link { margin-bottom: 1rem; display: block; text-align: left; }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold mb-6">Owner Login</h1>
+<body>
+  <div class="card">
+    <a href="login-select.html" class="back-link">← Choose Role</a>
+    <h1>Owner Login</h1>
 
-    <!-- Back to role selection -->
-    <p class="mb-4 text-sm">
-      <a href="login-select.html" class="text-teal-600 hover:underline">
-        ← Choose Role
-      </a>
-    </p>
-
-    <form id="login-form" class="space-y-4">
+    <form id="login-form">
       <div>
-        <label for="email" class="block text-sm font-medium text-left">Email</label>
-        <input id="email" name="email" type="email" required
-               class="mt-1 block w-full border-gray-300 rounded-md p-2" />
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
       </div>
       <div>
-        <label for="password" class="block text-sm font-medium text-left">Password</label>
-        <input id="password" name="password" type="password" required
-               class="mt-1 block w-full border-gray-300 rounded-md p-2" />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required />
       </div>
-      <button type="submit"
-              class="w-full py-2 bg-teal-600 text-white rounded-md font-medium">
-        Log In
-      </button>
+      <button type="submit">Log In</button>
     </form>
 
-    <p id="message" class="mt-4 text-center text-red-500 text-sm"></p>
-
-    <p class="mt-4 text-sm">
-      Need to
-      <a href="owner-signup.html" class="text-teal-600 hover:underline">sign up</a>?
+    <p id="message" style="color:#c53d3d; font-size:0.9rem; margin-top:1rem;"></p>
+    <p style="margin-top:1rem; font-size:0.9rem;">
+      Need to <a href="owner-signup.html">sign up</a>?
     </p>
   </div>
 
@@ -65,7 +94,6 @@
     const form = document.getElementById('login-form');
     const message = document.getElementById('message');
 
-    // Auto‐redirect if already signed in & verified
     onAuthStateChanged(auth, user => {
       if (user && user.emailVerified) {
         window.location.href = 'owner-dashboard.html';
@@ -75,19 +103,17 @@
     form.addEventListener('submit', async e => {
       e.preventDefault();
       message.textContent = '';
-      const email = form.email.value;
-      const password = form.password.value;
       try {
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        if (!userCred.user.emailVerified) {
-          message.innerHTML = 'Please verify your email. <button id="resend-btn" class="text-sm underline">Resend Verification Email</button>';
-          document.getElementById('resend-btn').addEventListener('click', async () => {
-            try {
-              await sendEmailVerification(auth.currentUser);
-              message.textContent = 'Verification email resent. Check your inbox.';
-            } catch (err) {
-              message.textContent = err.message;
-            }
+        const { user } = await signInWithEmailAndPassword(
+          auth,
+          form.email.value,
+          form.password.value
+        );
+        if (!user.emailVerified) {
+          message.innerHTML = 'Please verify your email. <br/><button id="resend">Resend Verification</button>';
+          document.getElementById('resend').addEventListener('click', async () => {
+            await sendEmailVerification(auth.currentUser);
+            message.textContent = 'Verification sent. Check your inbox.';
           });
         } else {
           window.location.href = 'owner-dashboard.html';
