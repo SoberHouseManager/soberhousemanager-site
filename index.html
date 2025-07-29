@@ -44,21 +44,19 @@
       margin-bottom: 2rem;
     }
 
-    /* UPDATED: unified button container */
     .hero-buttons {
       display: flex;
       justify-content: center;
       gap: 1rem;
       flex-wrap: wrap;
-      margin-top: 1rem; /* spacing below the paragraph */
+      margin-top: 1rem;
     }
-    /* UPDATED: force same size */
     .hero-buttons button {
       background-color: #319795;
       color: white;
       border: none;
-      padding: 1rem 0;         /* vertical padding only */
-      width: 180px;            /* same width for both */
+      padding: 1rem 0;
+      width: 180px;
       font-size: 1rem;
       cursor: pointer;
       border-radius: 5px;
@@ -147,8 +145,10 @@
     <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
 
     <div class="hero-buttons">
+      <!-- Now points to the selection page you'll create -->
       <button onclick="location.href='login-select.html'">Log In</button>
-      <button class="cta" onclick="location.href='manager-signup.html'">Sign Up</button>
+      <!-- Now routes to owner sign‑up -->
+      <button class="cta" onclick="location.href='owner-signup.html'">Sign Up</button>
     </div>
   </section>
 
