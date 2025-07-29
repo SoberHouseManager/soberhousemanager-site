@@ -3,31 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Log In - SoberHouseManager</title>
+  <title>Log In – SoberHouseManager</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Same inline card styling -->
+  <style>
+    body {
+      background: #f0fdfd;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+    }
+    .card {
+      max-width: 400px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h1 { color: #2e7d7b; margin-bottom: 1.5rem; }
+    .card button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      background: #319795;
+      color: #fff;
+      border: none;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .card button:hover { background: #247c7a; }
+    .card a { color: #319795; text-decoration: none; }
+    .card a:hover { text-decoration: underline; }
+    .back-link { margin-top: 1rem; display: block; }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold mb-6">Select Your Role to Log In</h1>
-    <div class="space-y-4">
-      <button onclick="location.href='owner-login.html'"
-              class="w-full py-2 bg-teal-600 text-white rounded-md font-medium">
-        Owner Login
-      </button>
-      <button onclick="location.href='manager-login.html'"
-              class="w-full py-2 bg-teal-600 text-white rounded-md font-medium">
-        Manager Login
-      </button>
-      <button onclick="location.href='resident-login.html'"
-              class="w-full py-2 bg-teal-600 text-white rounded-md font-medium">
-        Resident Login
-      </button>
-    </div>
-    <p class="mt-4 text-sm">
-      <a href="index.html" class="text-teal-600 hover:underline">
-        ← Back to Home
-      </a>
-    </p>
+<body>
+  <div class="card">
+    <h1>Select Your Role to Log In</h1>
+    <button onclick="location.href='owner-login.html'">Owner Login</button>
+    <button onclick="location.href='manager-login.html'">Manager Login</button>
+    <button onclick="location.href='resident-login.html'">Resident Login</button>
+
+    <a href="index.html" class="back-link">← Back to Home</a>
   </div>
 </body>
 </html>
