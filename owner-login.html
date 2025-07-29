@@ -58,10 +58,14 @@
       try {
         const userCred = await signInWithEmailAndPassword(auth, email, password);
         if (!userCred.user.emailVerified) {
-          message.textContent = 'Please verify your email. <button id="resend-btn" class="underline">Resend Verification Email</button>';
+          message.innerHTML = 'Please verify your email. <button id="resend-btn" class="underline">Resend Verification Email</button>';
           document.getElementById('resend-btn').addEventListener('click', async () => {
-            await sendEmailVerification(auth.currentUser);
-            message.textContent = 'Verification email resent. Check your inbox.';
+            try {
+              await sendEmailVerification(auth.currentUser);
+              message.textContent = 'Verification email resent. Check your inbox.';
+            } catch (err) {
+              message.textContent = err.message;
+            }
           });
         } else {
           window.location.href = '/owner-dashboard.html';
