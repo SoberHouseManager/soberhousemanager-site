@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owner Signup - SoberHouseManager</title>
-  <link rel="stylesheet" href="/style.css" />
+  <!-- Changed to relative path -->
+  <link rel="stylesheet" href="style.css" />
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -35,7 +36,13 @@
         try {
           const userCred = await createUserWithEmailAndPassword(auth, email, password);
           await sendEmailVerification(userCred.user);
-          message.textContent = 'Verification email sent! Please check your inbox.';
+          message.textContent = 'Verification email sent! Please check your inbox. Redirecting to login...';
+
+          // Optional: Redirect after a short delay
+          setTimeout(() => {
+            window.location.href = 'owner-login.html';
+          }, 3000);
+
           form.reset();
         } catch (err) {
           message.textContent = err.message;
@@ -59,7 +66,12 @@
       <button type="submit" class="w-full py-2 px-4 bg-teal-600 text-white rounded-md">Sign Up</button>
     </form>
     <p id="message" class="mt-4 text-center text-red-500 text-sm"></p>
-    <p class="mt-4 text-center text-sm">Already an owner? <a href="/owner-login.html" class="text-teal-600 font-medium">Log in</a></p>
+
+    <!-- Changed to relative link -->
+    <p class="mt-4 text-center text-sm">
+      Already an owner? 
+      <a href="owner-login.html" class="text-teal-600 font-medium">Log in</a>
+    </p>
   </div>
 </body>
 </html>
