@@ -273,6 +273,9 @@ button:hover {
   font-size: 1rem;
 }
 .login-card button {
+  display: block;        /* force full‑width stacking */
+  width: 100%;           /* match the card’s width */
+  margin: 0.5rem 0;      /* vertical spacing between them */
   background: #319795;
   color: #fff;
   border: none;
