@@ -1,8 +1,8 @@
-<!-- manager-dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manager Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -40,7 +40,7 @@
     .badge-danger { background-color: #e53e3e; color: white; }
     .badge-warning { background-color: #f6e05e; color: black; }
     .badge-success { background-color: #48bb78; color: white; }
-    .house-grid, #resident-list, #pending-apps {
+    .house-grid, #resident-list {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
@@ -63,21 +63,20 @@
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>SoberHouseManager</h1>
-    <nav>
-      <a href="manager-dashboard.html">Dashboard</a>
-      <a href="index.html">Home</a>
-      <a href="#" id="logoutBtn">Logout</a>
-    </nav>
+<body class="flex flex-col bg-gray-100 min-h-screen">
+  <header class="bg-teal-600 p-4 text-white">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">SoberHouseManager</h1>
+      <button id="logoutBtn" class="bg-white text-teal-600 px-3 py-1 rounded">Logout</button>
+    </div>
   </header>
 
-  <main>
+  <main class="flex-1 container mx-auto py-6">
+    <h2 class="text-xl font-semibold mb-4">Manager Dashboard</h2>
+
     <div class="tabs">
       <button class="tab-button active" data-tab="houses-tab">Houses</button>
       <button class="tab-button" data-tab="residents-tab">Residents</button>
-      <button class="tab-button" data-tab="applications-tab">Applications</button>
     </div>
 
     <div id="houses-tab" class="tab-content active">
@@ -107,19 +106,14 @@
         </select>
         <input type="text" id="searchResident" placeholder="Search by name">
       </div>
-      <div id="resident-list"></div>
-    </div>
-
-    <div id="applications-tab" class="tab-content">
-      <h2>Pending Applications</h2>
-      <div class="filters">
-        <select id="appHouseFilter">
-          <option value="all">All Houses</option>
-        </select>
-      </div>
-      <div id="pending-apps"></div>
+      <div id="resident-list" class="house-grid"></div>
     </div>
   </main>
+
+  <footer class="bg-white p-4 text-center text-sm text-gray-500 mt-auto">
+    <a href="/terms.html" class="underline">Terms of Service</a> •
+    <a href="/privacy.html" class="underline">Privacy Policy</a>
+  </footer>
 
   <script>
     const tabs = document.querySelectorAll('.tab-button');
@@ -140,12 +134,6 @@
     toggleHouseFormBtn.addEventListener("click", () => {
       houseFormContainer.style.display = houseFormContainer.style.display === "none" ? "block" : "none";
     });
-
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Application link copied to clipboard!");
-      });
-    }
   </script>
 
   <script type="module" src="manager-dashboard.js"></script>
