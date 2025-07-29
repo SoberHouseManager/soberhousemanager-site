@@ -197,3 +197,49 @@ button:hover {
   display: flex;
   flex-direction: column;
 }
+/* Loading Spinner */
+.loading-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 8px solid rgba(0,0,0,0.1);
+  border-top-color: #319795;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  z-index: 1000;
+}
+.hidden { display: none; }
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1000;
+}
+.toast {
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  color: #fff;
+  animation: fadein 0.3s, fadeout 0.3s 4.7s;
+}
+.toast-success { background-color: #48bb78; }
+.toast-error   { background-color: #e53e3e; }
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);  }
+}
+@keyframes fadeout {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
