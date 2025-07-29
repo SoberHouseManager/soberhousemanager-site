@@ -4,31 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owner Login - SoberHouseManager</title>
-  <link rel="stylesheet" href="/style.css" />
+  <!-- relative path -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6">Owner Login</h1>
+
+    <!-- Back to role selection -->
+    <p class="mb-4 text-sm text-center">
+      <a href="login-select.html" class="text-teal-600 hover:underline">
+        ← Choose Role
+      </a>
+    </p>
+
     <form id="login-form" class="space-y-4">
       <div>
         <label for="email" class="block text-sm font-medium">Email</label>
-        <input id="email" name="email" type="email" required class="mt-1 block w-full border-gray-300 rounded-md" />
+        <input id="email" name="email" type="email" required
+               class="mt-1 block w-full border-gray-300 rounded-md" />
       </div>
       <div>
         <label for="password" class="block text-sm font-medium">Password</label>
-        <input id="password" name="password" type="password" required class="mt-1 block w-full border-gray-300 rounded-md" />
+        <input id="password" name="password" type="password" required
+               class="mt-1 block w-full border-gray-300 rounded-md" />
       </div>
-      <button type="submit" class="w-full py-2 px-4 bg-teal-600 text-white rounded-md">Log In</button>
+      <button type="submit"
+              class="w-full py-2 px-4 bg-teal-600 text-white rounded-md">
+        Log In
+      </button>
     </form>
+
     <p id="message" class="mt-4 text-center text-red-500 text-sm"></p>
-    <p class="mt-4 text-center text-sm">Need to <a href="/owner-signup.html" class="text-teal-600 font-medium">sign up</a>?</p>
+
+    <p class="mt-4 text-center text-sm">
+      Need to
+      <a href="owner-signup.html" class="text-teal-600 font-medium hover:underline">
+        sign up
+      </a>?
+    </p>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendEmailVerification,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    // Firebase config (same as signup)
     const firebaseConfig = {
       apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
       authDomain: "soberhousemanager-3371d.firebaseapp.com",
@@ -43,10 +68,10 @@
     const form = document.getElementById('login-form');
     const message = document.getElementById('message');
 
-    // Redirect if already logged in and verified
+    // If already logged in & verified, go straight to dashboard
     onAuthStateChanged(auth, user => {
       if (user && user.emailVerified) {
-        window.location.href = '/owner-dashboard.html';
+        window.location.href = 'owner-dashboard.html';
       }
     });
 
@@ -58,7 +83,7 @@
       try {
         const userCred = await signInWithEmailAndPassword(auth, email, password);
         if (!userCred.user.emailVerified) {
-          message.innerHTML = 'Please verify your email. <button id="resend-btn" class="underline">Resend Verification Email</button>';
+          message.innerHTML = 'Please verify your email. <button id="resend-btn" class="underline text-sm">Resend Verification Email</button>';
           document.getElementById('resend-btn').addEventListener('click', async () => {
             try {
               await sendEmailVerification(auth.currentUser);
@@ -68,7 +93,7 @@
             }
           });
         } else {
-          window.location.href = '/owner-dashboard.html';
+          window.location.href = 'owner-dashboard.html';
         }
       } catch (err) {
         message.textContent = err.message;
