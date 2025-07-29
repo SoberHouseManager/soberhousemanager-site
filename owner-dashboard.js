@@ -65,7 +65,10 @@ async function loadHouses(ownerId) {
   const snap = await getDocs(q);
 
   if (snap.empty) {
-    mainContainer.innerHTML = `<p class="italic">No houses yet. Click "Create House" in the Manager dashboard to add one.</p>`;
+    mainContainer.innerHTML = `
+      <p class="italic">
+        No houses yet. Click "Create House" in the dashboard to add one.
+      </p>`;
     return;
   }
 
@@ -102,7 +105,6 @@ async function loadHouses(ownerId) {
 async function loadManagers(ownerId) {
   clearContainer();
   // ... existing managers code ...
-  // (You can keep the invite‑manager button as before)
 }
 
 async function loadAllResidents(ownerId) {
