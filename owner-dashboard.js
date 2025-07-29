@@ -1,251 +1,165 @@
 // owner-dashboard.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import {
   getFirestore,
   collection,
+  doc,
   query,
   where,
   getDocs,
-  addDoc,
   updateDoc,
-  setDoc,
-  doc
+  addDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+// Firebase initialization
 const firebaseConfig = {
   apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
   authDomain: "soberhousemanager-3371d.firebaseapp.com",
   projectId: "soberhousemanager-3371d",
   storageBucket: "soberhousemanager-3371d.appspot.com",
   messagingSenderId: "823636408266",
-  appId: "1:823636408266:web:6f953b2ffacc187f2fdd36"
+  appId: "1:823636408266:web:6f953b2ffacc187f"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const houseList = document.getElementById("house-list");
-const managerList = document.getElementById("manager-list");
-const residentList = document.getElementById("resident-list");
-const pendingApps = document.getElementById("pending-apps");
-const logoutBtn = document.getElementById("logoutBtn");
-const houseForm = document.getElementById("house-form");
-const managerForm = document.getElementById("manager-form");
+// DOM references
+const tabHouses = document.getElementById('tab-houses');
+const tabManagers = document.getElementById('tab-managers');
+const tabResidents = document.getElementById('tab-residents');
+const mainContainer = document.getElementById('main-container');
 
-logoutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
+// Auth guard & initialization
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = '/owner-signup.html';
+    return;
+  }
+  if (!user.emailVerified) {
+    alert('Please verify your email before accessing the Owner Dashboard.');
+    signOut(auth).then(() => window.location.href = '/owner-signup.html');
+    return;
+  }
+  initDashboard(user.uid);
 });
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return (window.location.href = "login.html");
+async function initDashboard(ownerId) {
+  setupTabListeners(ownerId);
+  // default to houses tab
+  loadHouses(ownerId);
+}
 
-  const housesQuery = query(collection(db, "houses"), where("ownerId", "==", user.uid));
-  const houseSnapshot = await getDocs(housesQuery);
-  const houseMap = {};
-  const residentData = [];
-  const managerMap = {};
-  const applicationCounts = {};
+function setupTabListeners(ownerId) {
+  tabHouses.addEventListener('click', () => loadHouses(ownerId));
+  tabManagers.addEventListener('click', () => loadManagers(ownerId));
+  tabResidents.addEventListener('click', () => loadAllResidents(ownerId));
+}
 
-  const appSnap = await getDocs(collection(db, "applications"));
-  appSnap.forEach(appDoc => {
-    const app = appDoc.data();
-    if (app.status === "pending" && app.houseId) {
-      if (!applicationCounts[app.houseId]) {
-        applicationCounts[app.houseId] = 0;
-      }
-      applicationCounts[app.houseId]++;
-    }
+async function loadHouses(ownerId) {
+  mainContainer.innerHTML = '<h2>Loading houses...</h2>';
+  const housesRef = collection(db, 'houses');
+  const q = query(housesRef, where('ownerId', '==', ownerId));
+  const snapshot = await getDocs(q);
+  mainContainer.innerHTML = '';
+  snapshot.forEach(docSnap => {
+    const house = docSnap.data();
+    const card = document.createElement('div');
+    card.className = 'house-card';
+    card.innerHTML = `
+      <h3>${house.name}</h3>
+      <p>${house.location}</p>
+      <p>Beds: ${house.numBeds}</p>
+      <button class='btn-view-residents' data-id='${docSnap.id}'>View Residents</button>
+      <button class='btn-edit-house' data-id='${docSnap.id}'>Edit House</button>
+      <span class='badge-past-due'>Past Due: ${house.pastDueCount || 0}</span>
+    `;
+    mainContainer.appendChild(card);
   });
+  document.querySelectorAll('.btn-view-residents').forEach(btn => {
+    btn.addEventListener('click', e => loadHouseResidents(e.target.dataset.id));
+  });
+}
 
-  for (const houseDoc of houseSnapshot.docs) {
-    const houseData = houseDoc.data();
-    const houseId = houseDoc.id;
-    houseMap[houseId] = houseData.houseName;
+async function loadManagers(ownerId) {
+  mainContainer.innerHTML = '<h2>Loading managers...</h2>';
+  // Collect managers from each house
+  const housesRef = collection(db, 'houses');
+  const q = query(housesRef, where('ownerId', '==', ownerId));
+  const snapshot = await getDocs(q);
+  const managersSet = new Set();
+  snapshot.forEach(hSnap => {
+    const { managers = [] } = hSnap.data();
+    managers.forEach(uid => managersSet.add(uid));
+  });
+  mainContainer.innerHTML = '';
+  for (let uid of managersSet) {
+    // Ideally fetch manager profile (to be implemented)
+    const managerCard = document.createElement('div');
+    managerCard.className = 'manager-card';
+    managerCard.textContent = `Manager UID: ${uid}`;
+    mainContainer.appendChild(managerCard);
+  }
+  // Invite manager button
+  const inviteBtn = document.createElement('button');
+  inviteBtn.textContent = 'Invite Manager';
+  inviteBtn.addEventListener('click', () => {/* trigger invite flow */});
+  mainContainer.appendChild(inviteBtn);
+}
 
-    const resSnap = await getDocs(query(collection(db, "users"), where("houseId", "==", houseId)));
-    let pastDueCount = 0;
-    let totalResidents = 0;
-
+async function loadAllResidents(ownerId) {
+  mainContainer.innerHTML = '<h2>Loading residents...</h2>';
+  const housesRef = collection(db, 'houses');
+  const q = query(housesRef, where('ownerId', '==', ownerId));
+  const snapshot = await getDocs(q);
+  mainContainer.innerHTML = '';
+  for (let hSnap of snapshot.docs) {
+    const houseId = hSnap.id;
+    // Fetch residents subcollection
+    const resRef = collection(db, 'houses', houseId, 'residents');
+    const resSnap = await getDocs(resRef);
     resSnap.forEach(rSnap => {
-      const rData = rSnap.data();
-      totalResidents++;
-      if (rData.balanceDue > 0) pastDueCount++;
-      residentData.push({ ...rData, id: rSnap.id });
-    });
-
-    const pendingCount = applicationCounts[houseId] || 0;
-    const badge = pastDueCount > 1 ? 'badge-danger' : pastDueCount === 1 ? 'badge-warning' : 'badge-success';
-    const pendingBadge = pendingCount > 0 ? `<span class="badge badge-warning">${pendingCount} Pending</span>` : `<span class="badge badge-success">0 Pending</span>`;
-    const fullLink = `${window.location.origin}/apply.html?houseId=${houseId}`;
-
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${houseData.houseName}</h3>
-      <p><strong>Location:</strong> ${houseData.location}</p>
-      <p><strong>Beds:</strong> ${houseData.numberOfBeds}</p>
-      <p><strong>Residents:</strong> ${totalResidents}</p>
-      <p><span class="badge ${badge}">${pastDueCount} Past Due</span> ${pendingBadge}</p>
-      <div class="card-buttons">
-        <button onclick="filterResidentsByHouse('${houseId}')">View Residents</button>
-        <button onclick="copyToClipboard('${fullLink}')">Copy Application Link</button>
-        <button onclick="editHouse('${houseId}')">Edit House</button>
-      </div>
-    `;
-    houseList.appendChild(div);
-  }
-
-  const usersSnap = await getDocs(query(collection(db, "users"), where("role", "==", "manager")));
-  usersSnap.forEach(userDoc => {
-    const m = userDoc.data();
-    if (!managerMap[m.email]) {
-      managerMap[m.email] = { ...m, id: userDoc.id };
-    }
-  });
-
-  Object.values(managerMap).forEach(manager => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${manager.fullName || "Unnamed Manager"}</h3>
-      <p>Email: ${manager.email}</p>
-      <p>Phone: ${manager.phone || "N/A"}</p>
-      <p>Assigned Houses: ${manager.assignedHouseIds?.length || 0}</p>
-      <button onclick="alert('Edit permissions coming soon')">Edit Permissions</button>
-    `;
-    managerList.appendChild(div);
-  });
-
-  function renderResidents() {
-    residentList.innerHTML = "";
-    residentData.forEach(r => {
-      const fullName = r.fullName || "Unnamed";
-      const isPastDue = r.balanceDue > 0;
-      const badgeColor = isPastDue ? "badge-danger" : "badge-success";
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <p><strong>${fullName}</strong> <span class="badge ${badgeColor}">${isPastDue ? "Past Due" : "Current"}</span></p>
-        <p>House: ${houseMap[r.houseId] || "N/A"}</p>
-        <p>Email: ${r.email}</p>
-        <p>Phone: ${r.phone}</p>
-        <button onclick="window.location.href='resident-details.html?residentId=${r.id}'">Details</button>
+      const res = rSnap.data();
+      const card = document.createElement('div');
+      card.className = 'resident-card';
+      card.innerHTML = `
+        <h4>${res.name}</h4>
+        <p>Balance: ${res.balance || 0}</p>
+        <button class='btn-resident-details' data-house='${houseId}' data-res='${rSnap.id}'>Details</button>
       `;
-      residentList.appendChild(div);
+      mainContainer.appendChild(card);
     });
   }
-
-  renderResidents();
-
-  window.filterResidentsByHouse = (houseId) => {
-    document.querySelector('[data-tab="residents-tab"]').click();
-    renderResidents();
-  };
-
-  window.copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert("Application link copied to clipboard!");
+  document.querySelectorAll('.btn-resident-details').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const { house, res } = e.target.dataset;
+      window.location.href = `/resident-details.html?houseId=${house}&resId=${res}`;
     });
-  };
-
-  window.editHouse = (houseId) => {
-    alert("Edit House feature coming soon.");
-  };
-
-  pendingApps.innerHTML = "";
-  appSnap.forEach(appDoc => {
-    const app = appDoc.data();
-    const houseId = app.houseId;
-    if (app.status !== "pending") return;
-
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${app.fullName}</h3>
-      <p>Email: ${app.email}</p>
-      <p>Phone: ${app.phone}</p>
-      <p>House: ${houseMap[houseId] || "N/A"}</p>
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-approve" onclick="approveApplication('${appDoc.id}')">Approve</button>
-        <button class="btn-reject" onclick="rejectApplication('${appDoc.id}')">Reject</button>
-      </div>
-    `;
-    pendingApps.appendChild(div);
   });
+}
 
-  window.approveApplication = async function (appId) {
-    const appDoc = await getDocs(query(collection(db, "applications"), where("__name__", "==", appId)));
-    const app = appDoc.docs[0]?.data();
-    if (!app) return alert("Application not found.");
-
-    const userId = app.email.replace(/[^a-zA-Z0-9]/g, "_");
-    await setDoc(doc(db, "users", userId), {
-      fullName: app.fullName,
-      email: app.email,
-      phone: app.phone,
-      houseId: app.houseId,
-      role: "resident",
-      balanceDue: 0,
-      createdAt: new Date().toISOString()
+async function loadHouseResidents(houseId) {
+  mainContainer.innerHTML = `<h2>Loading residents for house ${houseId}...</h2>`;
+  const resRef = collection(db, 'houses', houseId, 'residents');
+  const resSnap = await getDocs(resRef);
+  mainContainer.innerHTML = '';
+  resSnap.forEach(rSnap => {
+    const res = rSnap.data();
+    const card = document.createElement('div');
+    card.className = 'resident-card';
+    card.innerHTML = `
+      <h4>${res.name}</h4>
+      <p>Next Due: ${res.nextDueDate || 'N/A'}</p>
+      <p>Past Due: ${res.isPastDue ? 'Yes' : 'No'}</p>
+      <button class='btn-resident-details' data-house='${houseId}' data-res='${rSnap.id}'>Details</button>
+    `;
+    mainContainer.appendChild(card);
+  });
+  document.querySelectorAll('.btn-resident-details').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const { house, res } = e.target.dataset;
+      window.location.href = `/resident-details.html?houseId=${house}&resId=${res}`;
     });
-    await updateDoc(doc(db, "applications", appId), { status: "approved" });
-    alert("Approved and added as a resident.");
-    location.reload();
-  };
-
-  window.rejectApplication = async function (appId) {
-    await updateDoc(doc(db, "applications", appId), { status: "rejected" });
-    alert("Application rejected.");
-    location.reload();
-  };
-
-  if (houseForm) {
-    houseForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = houseForm["house-name"].value.trim();
-      const location = houseForm["location"].value.trim();
-      const beds = parseInt(houseForm["beds"].value.trim());
-      if (!name || !location || !beds) return alert("Fill all fields");
-
-      await addDoc(collection(db, "houses"), {
-        houseName: name,
-        location,
-        numberOfBeds: beds,
-        ownerId: user.uid,
-        createdAt: new Date().toISOString()
-      });
-
-      alert("House created!");
-      location.reload();
-    });
-  }
-
-  if (managerForm) {
-    managerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = managerForm["manager-name"].value.trim();
-      const email = managerForm["manager-email"].value.trim();
-      if (!name || !email) return alert("Enter name and email");
-
-      const userId = email.replace(/[^a-zA-Z0-9]/g, "_");
-      await setDoc(doc(db, "users", userId), {
-        fullName: name,
-        email,
-        role: "manager",
-        assignedHouseIds: [],
-        ownerId: user.uid,
-        createdAt: new Date().toISOString()
-      });
-
-      alert("Manager added!");
-      location.reload();
-    });
-  }
-});
+  });
+}
