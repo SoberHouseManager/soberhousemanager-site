@@ -43,29 +43,38 @@
       font-size: 1.2rem;
       margin-bottom: 2rem;
     }
+
+    /* UPDATED: unified button container */
     .hero-buttons {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem; /* spacing below the paragraph */
     }
-    .hero button {
+    /* UPDATED: force same size */
+    .hero-buttons button {
       background-color: #319795;
       color: white;
       border: none;
-      padding: 1rem 2rem;
+      padding: 1rem 0;         /* vertical padding only */
+      width: 180px;            /* same width for both */
       font-size: 1rem;
       cursor: pointer;
       border-radius: 5px;
       font-weight: 600;
       transition: background-color 0.3s ease;
     }
-    .hero button:hover {
+    .hero-buttons button:hover {
       background-color: #247c7a;
     }
-    .cta {
+    .hero-buttons button.cta {
       background-color: #2c9a99;
     }
+    .hero-buttons button.cta:hover {
+      background-color: #207b79;
+    }
+
     .section {
       padding: 3rem 2rem;
       max-width: 1000px;
@@ -114,6 +123,7 @@
       }
       .hero-buttons {
         flex-direction: column;
+        gap: 0.5rem;
       }
     }
   </style>
@@ -137,11 +147,7 @@
     <p>From rent collection to resident onboarding. SoberHouseManager helps you stay organized and focused on recovery, not paperwork.</p>
 
     <div class="hero-buttons">
-      <!-- Unified Log In button -->
       <button onclick="location.href='login-select.html'">Log In</button>
-    </div>
-
-    <div class="hero-buttons" style="margin-top: 0.75rem;">
       <button class="cta" onclick="location.href='manager-signup.html'">Sign Up</button>
     </div>
   </section>
