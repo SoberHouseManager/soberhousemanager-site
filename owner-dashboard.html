@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Owner Dashboard - SoberHouseManager</title>
   <link rel="stylesheet" href="/style.css" />
 </head>
@@ -16,13 +16,11 @@
 
   <main class="flex-1 container mx-auto py-6">
     <h2 class="text-xl font-semibold mb-4">Owner Dashboard</h2>
-
     <nav class="flex space-x-2 mb-6">
       <button id="tab-houses" class="px-4 py-2 bg-teal-500 text-white rounded">Houses</button>
       <button id="tab-managers" class="px-4 py-2 bg-teal-100 text-teal-700 rounded">Managers</button>
       <button id="tab-residents" class="px-4 py-2 bg-teal-100 text-teal-700 rounded">Residents</button>
     </nav>
-
     <div id="main-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- dynamic content -->
     </div>
@@ -32,6 +30,27 @@
     <a href="/terms.html" class="underline">Terms of Service</a> •
     <a href="/privacy.html" class="underline">Privacy Policy</a>
   </footer>
+
+  <!-- Loading spinner -->
+  <div id="loading-spinner" class="loading-spinner hidden"></div>
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container"></div>
+  <script>
+    function showLoading() {
+      document.getElementById('loading-spinner').classList.remove('hidden');
+    }
+    function hideLoading() {
+      document.getElementById('loading-spinner').classList.add('hidden');
+    }
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+    }
+  </script>
 
   <script type="module" src="/owner-dashboard.js"></script>
 </body>
