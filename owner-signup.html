@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner Signup - SoberHouseManager</title>
+  <link rel="stylesheet" href="/style.css" />
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFUOYQoC4et7H4oTmyjo3sBs_rI5eNgOg",
+      authDomain: "soberhousemanager-3371d.firebaseapp.com",
+      projectId: "soberhousemanager-3371d",
+      storageBucket: "soberhousemanager-3371d.appspot.com",
+      messagingSenderId: "823636408266",
+      appId: "1:823636408266:web:6f953b2ffacc187f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('signup-form');
+      const message = document.getElementById('message');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        message.textContent = '';
+        const email = form.email.value;
+        const password = form.password.value;
+        try {
+          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          await sendEmailVerification(userCred.user);
+          message.textContent = 'Verification email sent! Please check your inbox.';
+          form.reset();
+        } catch (err) {
+          message.textContent = err.message;
+        }
+      });
+    });
+  </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6">Owner Signup</h1>
+    <form id="signup-form" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-medium">Email</label>
+        <input id="email" name="email" type="email" required class="mt-1 block w-full border-gray-300 rounded-md" />
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium">Password</label>
+        <input id="password" name="password" type="password" minlength="8" required class="mt-1 block w-full border-gray-300 rounded-md" />
+      </div>
+      <button type="submit" class="w-full py-2 px-4 bg-teal-600 text-white rounded-md">Sign Up</button>
+    </form>
+    <p id="message" class="mt-4 text-center text-red-500 text-sm"></p>
+    <p class="mt-4 text-center text-sm">Already an owner? <a href="/owner-login.html" class="text-teal-600 font-medium">Log in</a></p>
+  </div>
+</body>
+</html>
