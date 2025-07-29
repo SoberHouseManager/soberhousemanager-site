@@ -1,66 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manager Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manager Dashboard - SoberHouseManager</title>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-    .tabs {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .tab-button {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      background-color: #319795;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    .tab-button.active {
-      background-color: #267c7e;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      display: inline-block;
-    }
+    /* keep all existing styles here unchanged */
+    .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    .tab-button { padding: 0.75rem 1.5rem; border: none; background: #319795; color: white; cursor: pointer; border-radius: 5px; font-size: 1rem; }
+    .tab-button.active { background: #267c7e; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .badge { padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; display: inline-block; }
     .badge-danger { background-color: #e53e3e; color: white; }
-    .badge-warning { background-color: #f6e05e; color: black; }
     .badge-success { background-color: #48bb78; color: white; }
-    .house-grid, #resident-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-    .filters {
-      margin-bottom: 1rem;
-    }
-    .filters select,
-    .filters input[type="text"] {
-      padding: 0.5rem;
-      margin-right: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .card-buttons {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
+    .house-grid, #resident-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; }
+    .filters { margin-bottom: 1rem; }
+    .filters select, .filters input[type="text"] { padding: 0.5rem; margin-right: 1rem; border-radius: 5px; border: 1px solid #ccc; }
+    .card-buttons { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   </style>
 </head>
 <body class="flex flex-col bg-gray-100 min-h-screen">
@@ -73,7 +31,6 @@
 
   <main class="flex-1 container mx-auto py-6">
     <h2 class="text-xl font-semibold mb-4">Manager Dashboard</h2>
-
     <div class="tabs">
       <button class="tab-button active" data-tab="houses-tab">Houses</button>
       <button class="tab-button" data-tab="residents-tab">Residents</button>
@@ -82,7 +39,7 @@
     <div id="houses-tab" class="tab-content active">
       <h2>Houses</h2>
       <button id="toggleHouseForm">+ Create New House</button>
-      <div id="house-form-container" style="display: none; margin-top: 1rem;">
+      <div id="house-form-container" style="display:none; margin-top:1rem;">
         <form id="house-form">
           <input type="text" id="house-name" placeholder="House Name" required>
           <input type="text" id="location" placeholder="Location" required>
@@ -101,9 +58,7 @@
           <option value="current">Current</option>
           <option value="pastdue">Past Due</option>
         </select>
-        <select id="houseFilter">
-          <option value="all">All Houses</option>
-        </select>
+        <select id="houseFilter"><option value="all">All Houses</option></select>
         <input type="text" id="searchResident" placeholder="Search by name">
       </div>
       <div id="resident-list" class="house-grid"></div>
@@ -115,27 +70,22 @@
     <a href="/privacy.html" class="underline">Privacy Policy</a>
   </footer>
 
+  <!-- Loading & Toasts -->
+  <div id="loading-spinner" class="loading-spinner hidden"></div>
+  <div id="toast-container" class="toast-container"></div>
   <script>
-    const tabs = document.querySelectorAll('.tab-button');
-    const contents = document.querySelectorAll('.tab-content');
-    const toggleHouseFormBtn = document.getElementById("toggleHouseForm");
-    const houseFormContainer = document.getElementById("house-form-container");
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        contents.forEach(c => c.classList.remove('active'));
-
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
-
-    toggleHouseFormBtn.addEventListener("click", () => {
-      houseFormContainer.style.display = houseFormContainer.style.display === "none" ? "block" : "none";
-    });
+    function showLoading() { document.getElementById('loading-spinner').classList.remove('hidden'); }
+    function hideLoading() { document.getElementById('loading-spinner').classList.add('hidden'); }
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+    }
   </script>
 
-  <script type="module" src="manager-dashboard.js"></script>
+  <script type="module" src="/manager-dashboard.js"></script>
 </body>
 </html>
